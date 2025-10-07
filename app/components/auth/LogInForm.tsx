@@ -8,6 +8,7 @@ import { signInAction } from "@/lib/authActions";
 import { FormField } from "../forms/FormField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { toast } from "sonner";
 
 export function LogInForm() {
   const router = useRouter(); //後で確認
@@ -24,6 +25,9 @@ export function LogInForm() {
     const result = await signInAction(data);
 
     if (!result.success) {
+      toast.error(result.message, {
+        description: "入力内容をご確認ください。",
+      });
       form.setError("root.serverError", {
         type: "manual",
         message: result.message,
@@ -38,7 +42,7 @@ export function LogInForm() {
   return (
     <AuthCard
       title="ログイン"
-      description="登録済みのメールアドレスとパスワードを入力してください"
+      description="登録済みのメールアドレスとパスワードを入力してください" //消すか？
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(OnSubmit)} className="space-y-4">
@@ -48,6 +52,7 @@ export function LogInForm() {
             label="メールアドレス"
             type="email"
             placeholder="example@mail.com"
+            autoComplete="email"
           />
           <FormField
             form={form}
@@ -55,6 +60,7 @@ export function LogInForm() {
             label="パスワード"
             type="password"
             placeholder="••••••••"
+            autoComplete="current-password"
           />
 
           {form.formState.errors.root?.serverError && (
@@ -74,6 +80,7 @@ export function LogInForm() {
             <a href="/auth/signup" className="underline">
               新規登録
             </a>
+            <br />
           </div>
         </form>
       </Form>

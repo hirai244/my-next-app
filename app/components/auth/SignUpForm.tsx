@@ -9,6 +9,7 @@ import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { signUpAction } from "@/lib/authActions";
+import { toast } from "sonner";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -25,14 +26,22 @@ export function SignUpForm() {
     const result = await signUpAction(data);
 
     if (!result.success) {
+      toast.error(result.message, {
+        description: "入力内容をご確認ください。",
+      });
+      //ルートエラーの設定
       form.setError("root.serverError", {
         type: "manual",
         message: result.message,
       });
+      //処理の中断
       return;
     }
-    alert("サインアップが完了しました。確認メールを送信しました");
-    router.push("/auth/login");
+    toast.success("登録完了", {
+      description: "確認メールを送信しました。",
+      duration: 5000,
+    });
+    router.push("/auth/confirm-email");
   };
 
   return (
@@ -54,6 +63,9 @@ export function SignUpForm() {
             name="password"
             label="パスワード"
             type="password"
+            autoComplete="new-password"
+            placeholder="••••••••" //あとで
+            description="8文字以上の半角英数字記号を含めてください"
           />
           {form.formState.errors.root?.serverError && (
             <p className="text-sm text-red-500">
