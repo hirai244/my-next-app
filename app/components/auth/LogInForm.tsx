@@ -34,6 +34,9 @@ export function LogInForm() {
       });
       return;
     }
+    toast.success("ログイン成功", {
+      duration: 5000,
+    });
 
     router.refresh();
     router.push("/"); //認証後
@@ -68,6 +71,7 @@ export function LogInForm() {
               {form.formState.errors.root.serverError.message}
             </p>
           )}
+          <a href="/auth/forget-password">パスワードをお忘れですか？</a>
           <Button
             type="submit"
             className="w-full"
