@@ -1,6 +1,6 @@
 "use client";
-import AuthCard from "@/app/components/auth/AuthCard";
-import { FormField } from "@/app/components/forms/FormField";
+import AuthCard from "@/components/auth/AuthCard";
+import { FormField } from "@/components/forms/FormField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { updatePasswordAction } from "@/lib/authActions";

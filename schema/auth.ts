@@ -1,6 +1,6 @@
+import { data } from "framer-motion/client";
 import { isStrongPassword } from "validator";
-import z from "zod";
-import { da } from "zod/locales";
+import z, { email } from "zod";
 
 const passwordOptions = {
   minLength: 8,
@@ -10,6 +10,27 @@ const passwordOptions = {
   minSymbols: 1,
   pointsForContaining: 0,
 };
+
+export const signupSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "有効なメールアドレスを入力してください。" }),
+  password: z.string().superRefine((data, ctx) => {
+    if (!isStrongPassword(data, passwordOptions)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "大文字を含む半角英数字と記号を含めてください。",
+      });
+      return;
+    }
+  }),
+  role: z.enum(["farmer", "student"], {
+    message: "選択してください",
+  }),
+});
+export type SignupFormValues = z.infer<typeof signupSchema>;
+
+//ログイン用のスキーマ
 
 export const authSchema = z.object({
   email: z

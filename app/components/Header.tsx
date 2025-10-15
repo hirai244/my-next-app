@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { currentUser } from "@/lib/auth";
 import { signOutAction } from "@/lib/authActions";
+import { currentUser } from "@/lib/currentUser";
 
 const Header = async () => {
   const user = await currentUser();
@@ -22,9 +22,11 @@ const Header = async () => {
           <Button variant="outline">ログアウト</Button>
         </form>
       ) : (
-        <Button asChild>
-          <Link href="/auth/login">ログイン</Link>
-        </Button>
+        <form>
+          <Button asChild>
+            <Link href="/auth/signin">ログイン</Link>
+          </Button>
+        </form>
       )}
     </header>
   );

@@ -1,4 +1,4 @@
-import AuthCard from "@/app/components/auth/AuthCard";
+import AuthCard from "@/components/auth/AuthCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

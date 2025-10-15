@@ -19,6 +19,8 @@ interface FormFieldProps {
   placeholder?: string;
   autoComplete?: string;
   description?: string;
+  children?: React.ReactNode;
+  isCusutomInput?: boolean;
 }
 
 export function FormField({
@@ -29,6 +31,7 @@ export function FormField({
   placeholder,
   autoComplete,
   description,
+  children,
 }: FormFieldProps) {
   return (
     <ShadcnFormField
@@ -38,12 +41,17 @@ export function FormField({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input
-              placeholder={placeholder}
-              type={type}
-              {...field}
-              autoComplete={autoComplete}
-            />
+            {/* チルドレンがある場合 */}
+            {children ? (
+              children
+            ) : (
+              <Input
+                placeholder={placeholder}
+                autoComplete={autoComplete}
+                {...field}
+                type={type}
+              />
+            )}
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

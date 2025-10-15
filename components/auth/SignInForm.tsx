@@ -1,17 +1,16 @@
 "use client";
-import React from "react";
 import AuthCard from "./AuthCard";
 import { useForm } from "react-hook-form";
-import { FormField } from "../forms/FormField";
 import { useRouter } from "next/navigation";
 import { AuthFormValues, authSchema } from "@/schema/auth";
-import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signInAction } from "@/lib/authActions";
+import { FormField } from "../forms/FormField";
 import { Button } from "@/components/ui/button";
-import { signUpAction } from "@/lib/authActions";
+import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
 
-export function SignUpForm() {
+export function SignInForm() {
   const router = useRouter();
 
   const form = useForm<AuthFormValues>({
@@ -22,68 +21,70 @@ export function SignUpForm() {
     },
   });
 
-  const onSubmit = async (data: AuthFormValues) => {
-    const result = await signUpAction(data);
+  const OnSubmit = async (data: AuthFormValues) => {
+    const result = await signInAction(data);
 
     if (!result.success) {
       toast.error(result.message, {
         description: "入力内容をご確認ください。",
       });
-      //ルートエラーの設定
       form.setError("root.serverError", {
         type: "manual",
         message: result.message,
       });
-      //処理の中断
       return;
     }
-    toast.success("登録完了", {
-      description: "確認メールを送信しました。",
+    toast.success("ログイン成功", {
       duration: 5000,
     });
-    router.push("/auth/confirm-email");
+
+    router.refresh();
+    router.push("/"); //認証後のページ
   };
 
   return (
     <AuthCard
-      title="新規アカウント作成"
-      description="メールアドレスと6文字以上のパスワードを入力してください"
+      title="ログイン"
+      description="登録済みのメールアドレスとパスワードを入力してください" //消すか？
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-4">
+        <form onSubmit={form.handleSubmit(OnSubmit)} className="space-y-4">
           <FormField
             form={form}
             name="email"
             label="メールアドレス"
             type="email"
             placeholder="example@mail.com"
+            autoComplete="email"
           />
           <FormField
             form={form}
             name="password"
             label="パスワード"
             type="password"
-            autoComplete="new-password"
-            placeholder="••••••••" //あとで
-            description="8文字以上の半角英数字記号を含めてください"
+            placeholder="••••••••"
+            autoComplete="current-password"
           />
+
           {form.formState.errors.root?.serverError && (
             <p className="text-sm text-red-500">
               {form.formState.errors.root.serverError.message}
             </p>
           )}
+          <a href="/auth/forget-password">パスワードをお忘れですか？</a>
           <Button
             type="submit"
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "登録中..." : "アカウント作成"}
+            {form.formState.isSubmitting ? "ログイン中..." : "ログイン"}
           </Button>
           <div className="mt-4 text-center text-sm">
-            アカウントをお持ちですか？{" "}
-            <a href="/auth/login" className="underline">
-              ログイン
+            アカウントをお持ちではありませんか？{" "}
+            <a href="/auth/signup" className="underline">
+              新規登録
             </a>
+            <br />
           </div>
         </form>
       </Form>
@@ -91,4 +92,4 @@ export function SignUpForm() {
   );
 }
 
-export default SignUpForm;
+export default SignInForm;

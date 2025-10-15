@@ -1,10 +1,13 @@
-import SignUpForm from "@/app/components/auth/SignUpForm";
+import SignUpForm from "@/components/auth/SignUpForm";
+import AnimatePageWrapper from "@/components/motion/AnimatePageWrapper";
 import React from "react";
 
 const page = () => {
   return (
     <div>
-      <SignUpForm />
+      <AnimatePageWrapper>
+        <SignUpForm />
+      </AnimatePageWrapper>
     </div>
   );
 };
