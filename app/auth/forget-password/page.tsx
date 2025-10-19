@@ -46,7 +46,7 @@ export default function () {
   return (
     <AuthCard title="再設定" description="メールアドレスを入力してください。">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             form={form}
             name="email"
@@ -56,13 +56,15 @@ export default function () {
             autoComplete="email"
           />
           {form.formState.errors.root?.serverError && (
-            <p className="text-sm text-red-500">
-              {form.formState.errors.root.serverError.message}
-            </p>
+            <div className="mt-2 p-3 bg-red-100 border border-red-400 rounded-md">
+              <p className="text-sm text-red-600">
+                {form.formState.errors.root.serverError.message}
+              </p>
+            </div>
           )}
           <Button
             type="submit"
-            className="w-full"
+            className="w-full mt-4"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? "送信中..." : "送信"}

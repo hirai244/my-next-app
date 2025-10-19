@@ -15,7 +15,7 @@ import AuthCard from "../auth/AuthCard";
 
 export function ProfileSetupForm({ userId }: { userId: string }) {
   const [selecteRole, setSelectRole] = useState<"farmer" | "student" | null>(
-    null
+    "student"
   );
 
   const form = useForm<ProfileFormValues>({
@@ -47,10 +47,7 @@ export function ProfileSetupForm({ userId }: { userId: string }) {
     <AuthCard title="" description="">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {!selecteRole && (
-            <RoleSelectionForm form={form} onRoleSelect={setSelectRole} />
-          )}
-
+          <RoleSelectionForm form={form} onRoleSelect={setSelectRole} />
           {selecteRole && (
             <div>
               {selecteRole === "farmer" && <FarmerDetailForm form={form} />}

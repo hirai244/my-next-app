@@ -6,13 +6,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-interface CardProps {
+interface RecruitmentCardProps {
   title: string;
   description: string;
-  children: React.ReactNode;
+  children: React.ReactNode; //
 }
 
-export default function dCard({ title, description, children }: CardProps) {
+export default function RecruitmentCard({
+  title,
+  description,
+  children,
+}: RecruitmentCardProps) {
   return (
     <div className="flex min-h-screen flex-col items-center p-24">
       <Card className="w-full max-w-sm">

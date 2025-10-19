@@ -18,13 +18,6 @@ export function StudentDetailForm({ form }: DetailStudentProps) {
         placeholder=""
         description="正式名称を入力してください"
       />
-      <FormField
-        form={form}
-        name="major"
-        label="学部・専攻"
-        type="text"
-        placeholder=""
-      />
       <FormField form={form} name="researchTopic" label="研究テーマ" />
       <FormField
         form={form}

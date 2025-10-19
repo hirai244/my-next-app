@@ -15,6 +15,12 @@ const Header = async () => {
       <Button asChild variant="ghost">
         <Link href="/list">募集一覧</Link>
       </Button>
+      <Button asChild variant="ghost">
+        <Link href="/list">お気に入り</Link>
+      </Button>
+      <Button asChild variant="ghost">
+        <Link href="/list">マイページ</Link>
+      </Button>
 
       <span className="flex-1"></span>
       {user ? (

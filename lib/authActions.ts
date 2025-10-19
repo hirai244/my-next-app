@@ -46,7 +46,7 @@ export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
 
-  redirect("/auth/login");
+  redirect("/auth/signin");
 }
 
 //パスワードリセット関数
@@ -65,7 +65,7 @@ export async function sendPasswordResetEmailAction(
     console.log(error); //
   }
 
-  redirect("/auth/login"); //
+  redirect("/auth/signin"); //
 }
 
 //パスワード更新関数

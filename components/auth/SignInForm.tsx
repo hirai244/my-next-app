@@ -9,6 +9,7 @@ import { FormField } from "../forms/FormField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 export function SignInForm() {
   const router = useRouter();
@@ -71,17 +72,25 @@ export function SignInForm() {
               {form.formState.errors.root.serverError.message}
             </p>
           )}
-          <a href="/auth/forget-password">パスワードをお忘れですか？</a>
+          <a
+            href="/auth/forget-password"
+            className="text-primary hover:text-primary/80"
+          >
+            パスワードをお忘れですか？
+          </a>
           <Button
             type="submit"
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "ログイン中..." : "ログイン"}
+            {form.formState.isSubmitting ? <Spinner /> : "ログイン"}
           </Button>
           <div className="mt-4 text-center text-sm">
             アカウントをお持ちではありませんか？{" "}
-            <a href="/auth/signup" className="underline">
+            <a
+              href="/auth/signup"
+              className="underline text-primary hover:text-primary/80"
+            >
               新規登録
             </a>
             <br />
