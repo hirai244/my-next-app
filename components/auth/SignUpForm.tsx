@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { signUpAction } from "@/lib/authActions";
 import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -77,7 +78,7 @@ export function SignUpForm() {
             className="w-full mt-4"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "登録中..." : "アカウント作成"}
+            {form.formState.isSubmitting ? <Spinner /> : "アカウント作成"}
           </Button>
           <div className="mt-4 text-center text-sm">
             アカウントをお持ちですか？{" "}

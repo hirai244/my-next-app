@@ -50,7 +50,7 @@ export async function signOutAction() {
 }
 
 //パスワードリセット関数
-export async function sendPasswordResetEmailAction(
+export async function sendResetEmailAction(
   data: EmailFormValues
 ): Promise<AuthResult> {
   const supabase = await createClient();

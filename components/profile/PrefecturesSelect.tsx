@@ -2,33 +2,40 @@
 import React from "react";
 import { SelectScrollable } from "../SelectScrollable";
 import { PREFECTURE_OPTIONS } from "@/constants/prefectures";
-import { UseFormReturn } from "react-hook-form";
+import { Path, UseFormReturn } from "react-hook-form";
 import { ProfileFormValues } from "@/schema/profile";
 import { SelectItem } from "../ui/select";
 
 interface PrefectureSelectProps {
   form: UseFormReturn<ProfileFormValues>;
-  name: keyof ProfileFormValues;
-  label: string;
+  name: Path<ProfileFormValues>;
+  // label: string;
   placeholder: string;
+  title: string;
 }
 
 export function PrefectureSelect({
   form,
   name,
-  label,
+  // label,
   placeholder,
+  title,
 }: PrefectureSelectProps) {
   return (
     <SelectScrollable
-      title="都道府県"
+      title={title}
       placeholder={placeholder}
       name={name}
-      label={label}
+      // label={label}
       form={form}
+      className="mb-4"
     >
       {PREFECTURE_OPTIONS.map((pref) => (
-        <SelectItem key={pref.value || "default"} value={pref.value}>
+        <SelectItem
+          key={pref.value || "default"}
+          value={pref.value}
+          className="cursor-pointer hover:bg-gray-100"
+        >
           {pref.label}
         </SelectItem>
       ))}

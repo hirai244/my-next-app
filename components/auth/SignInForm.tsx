@@ -46,7 +46,7 @@ export function SignInForm() {
   return (
     <AuthCard
       title="ログイン"
-      description="登録済みのメールアドレスとパスワードを入力してください" //消すか？
+      description="登録済みのメールアドレスとパスワードを入力してください"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(OnSubmit)} className="space-y-4">
