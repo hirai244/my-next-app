@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
 import { PREFECTURE_OPTIONS } from "@/constants/prefectures";
-import { FieldValues, Path, UseFormReturn } from "react-hook-form";
+import { Path, UseFormReturn } from "react-hook-form";
 import { SelectScrollable } from "./SelectScrollable";
 import { SelectItem } from "./ui/select";
-import { RBBCreateValues } from "@/schema/job";
+import { JobCreateValues } from "@/schema/job";
 
 interface PrefectureScrollProps {
-  form: UseFormReturn<RBBCreateValues>;
-  name: Path<RBBCreateValues>;
+  form: UseFormReturn<JobCreateValues>;
+  name: Path<JobCreateValues>;
   placeholder: string;
   title: string;
 }
