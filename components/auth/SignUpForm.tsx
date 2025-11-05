@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { signUpAction } from "@/lib/authActions";
 import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -50,7 +51,7 @@ export function SignUpForm() {
       description="メールアドレスと6文字以上のパスワードを入力してください"
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             form={form}
             name="email"
@@ -74,14 +75,17 @@ export function SignUpForm() {
           )}
           <Button
             type="submit"
-            className="w-full"
+            className="w-full mt-4"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "登録中..." : "アカウント作成"}
+            {form.formState.isSubmitting ? <Spinner /> : "アカウント作成"}
           </Button>
           <div className="mt-4 text-center text-sm">
             アカウントをお持ちですか？{" "}
-            <a href="/auth/signin" className="underline">
+            <a
+              href="/auth/signin"
+              className="underline text-primary hover:text-primary/80"
+            >
               ログイン
             </a>
           </div>

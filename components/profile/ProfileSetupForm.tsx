@@ -9,13 +9,17 @@ import { toast } from "sonner";
 import { RoleSelectionForm } from "./RoleSelectionForm";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
-import FarmerDetailForm from "./FarmerDetailForm";
 import StudentDetailForm from "./StudentDetailForm";
 import AuthCard from "../auth/AuthCard";
+import { FarmerDetailForm } from "./FarmerDetailForm";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
-export function ProfileSetupForm({ userId }: { userId: string }) {
-  const [selecteRole, setSelectRole] = useState<"farmer" | "student" | null>(
-    null
+export function ProfileSetupForm() {
+  const router = useRouter();
+
+  const [selectRole, setSelectRole] = useState<"farmer" | "student" | null>(
+    "farmer"
   );
 
   const form = useForm<ProfileFormValues>({
@@ -25,44 +29,58 @@ export function ProfileSetupForm({ userId }: { userId: string }) {
       role: "farmer",
       farmName: "",
       location: "",
-      mainCrops: [],
-      description: "",
       university: "",
       major: "",
-      researchTopic: "",
       bio: "",
     } as ProfileFormValues,
   });
-  const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
-    const result = await createProfile(data);
+  // const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
+  //   const result = await createProfile(data);
 
-    if (result.success) {
-      toast.success("", { description: "" });
-    } else {
-      toast.error(result.message);
+  //   if (result.success) {
+  //     toast.success("成功", { description: "ご登録ありがとうございます" });
+  //   } else {
+  //     toast.error(result.message);
+  //   }
+  // };
+  const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
+    try {
+      await createProfile(data);
+      toast.success("登録完了。ページを移動します。", { duration: 2000 });
+      router.push("/");
+    } catch (e) {
+      const errorMessage =
+        e instanceof Error ? e.message : "予期せぬエラーが発生しました。";
+      toast.error("プロファイル登録中にエラーが発生しました。", {
+        description: errorMessage,
+      });
     }
   };
 
+  const MotionButton = motion(Button);
+
   return (
-    <AuthCard title="" description="">
+    <AuthCard
+      title="プロフィール登録"
+      description="当てはまる方を選択し記入してください"
+    >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {!selecteRole && (
-            <RoleSelectionForm form={form} onRoleSelect={setSelectRole} />
-          )}
-
-          {selecteRole && (
+          <RoleSelectionForm form={form} onRoleSelect={setSelectRole} />
+          {selectRole && (
             <div>
-              {selecteRole === "farmer" && <FarmerDetailForm form={form} />}
-              {selecteRole === "student" && <StudentDetailForm form={form} />}
+              {selectRole === "farmer" && <FarmerDetailForm form={form} />}
+              {selectRole === "student" && <StudentDetailForm form={form} />}
 
-              <Button
+              <MotionButton
                 type="submit"
                 className="w-full"
                 disabled={form.formState.isSubmitting}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                登録
-              </Button>
+                {form.formState.isSubmitting ? "登録中..." : "登録"}
+              </MotionButton>
             </div>
           )}
         </form>

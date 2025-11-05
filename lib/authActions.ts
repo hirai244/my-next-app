@@ -4,14 +4,14 @@ import {
   EmailFormValues,
   PasswordFormValues,
 } from "@/schema/auth";
+import { ActionResult } from "@/schema/shared";
 import { createClient } from "@/utils/supabase/server";
-import { error } from "console";
 import { redirect } from "next/navigation";
 
-type AuthResult = { success: true } | { success: false; message: string };
-
 //ログイン関数
-export async function signInAction(data: AuthFormValues): Promise<AuthResult> {
+export async function signInAction(
+  data: AuthFormValues
+): Promise<ActionResult> {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -27,7 +27,9 @@ export async function signInAction(data: AuthFormValues): Promise<AuthResult> {
 }
 
 // サインアップ関数
-export async function signUpAction(data: AuthFormValues): Promise<AuthResult> {
+export async function signUpAction(
+  data: AuthFormValues
+): Promise<ActionResult> {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
@@ -36,7 +38,7 @@ export async function signUpAction(data: AuthFormValues): Promise<AuthResult> {
   });
 
   if (error) {
-    return { success: false, message: error.message };
+    return { success: false, message: "認証に失敗しました。" };
   }
 
   return { success: true };
@@ -46,13 +48,13 @@ export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
 
-  redirect("/auth/login");
+  redirect("/auth/signin");
 }
 
 //パスワードリセット関数
-export async function sendPasswordResetEmailAction(
+export async function sendResetEmailAction(
   data: EmailFormValues
-): Promise<AuthResult> {
+): Promise<ActionResult> {
   const supabase = await createClient();
 
   const redirectURL = "${process.env.NEXT_PUBLIC_BASE_URL}/auth/reset-password";
@@ -62,17 +64,17 @@ export async function sendPasswordResetEmailAction(
   });
 
   if (error) {
-    console.log(error); //
+    return { success: false, message: "メール送信に失敗しました。" };
   }
 
-  redirect("/auth/login"); //
+  redirect("/auth/signin"); //
 }
 
 //パスワード更新関数
 
 export async function updatePasswordAction(
   data: PasswordFormValues
-): Promise<AuthResult> {
+): Promise<ActionResult> {
   const newPassword = data.password;
   const supabase = await createClient();
 
@@ -81,7 +83,7 @@ export async function updatePasswordAction(
   });
 
   if (error) {
-    throw new Error("パスワードの更新に失敗しました。再度お試しください。");
+    return { success: false, message: "パスワード更新に失敗しました。" };
   }
   redirect("/");
 }
