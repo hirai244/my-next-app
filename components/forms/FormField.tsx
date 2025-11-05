@@ -10,9 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
-import { DatePicker } from "../DatePickerr";
+import { DatePicker } from "../DatePicker";
 import { DateRangePicker } from "../DateRangePicker";
-import { SelectScroll } from "../SelectScroll";
 
 interface FormFieldProps {
   name: string;
@@ -21,7 +20,7 @@ interface FormFieldProps {
   type?: string;
   placeholder?: string;
   autoComplete?: string;
-  description?: string;
+  description?: string | React.ReactNode;
   children?: React.ReactNode;
   isCusutomInput?: boolean;
   className?: string;
@@ -65,16 +64,6 @@ export function FormField({
                 onChange={field.onChange}
                 disabled={form.formState.isSubmitting}
               />
-            ) : type === "select" ? (
-              <SelectScroll
-                title={label}
-                placeholder={placeholder}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-              >
-                {children}
-              </SelectScroll>
             ) : (
               <div>
                 <Input

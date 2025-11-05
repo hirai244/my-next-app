@@ -17,6 +17,7 @@ interface SelectScrollProps {
   onChange: (value: string) => void;
   value: string;
   onBlur: () => void;
+  name: string;
 }
 export function SelectScroll({
   title,

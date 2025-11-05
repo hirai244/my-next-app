@@ -54,7 +54,3 @@ export const profileSetupSchema = z.discriminatedUnion("role", [
 ]);
 
 export type ProfileFormValues = z.infer<typeof profileSetupSchema>;
-
-export type ActionResult =
-  | { success: true }
-  | { success: false; message: string };

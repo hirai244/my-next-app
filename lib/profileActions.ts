@@ -1,13 +1,10 @@
 "use server";
-import {
-  ActionResult,
-  ProfileFormValues,
-  RoleSelectionValues,
-} from "@/schema/profile";
+import { ProfileFormValues } from "@/schema/profile";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { currentUser } from "./currentUser";
 import { cache } from "react";
+import { ActionResult } from "@/schema/shared";
 
 export async function createProfile(
   data: ProfileFormValues

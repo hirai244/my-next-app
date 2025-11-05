@@ -5,7 +5,7 @@ export type AddressResult = {
   city: string;
   town: string;
 };
-export async function zipCloudApi(
+export async function getAddress(
   zipCode: string
 ): Promise<AddressResult | null> {
   if (!zipCode || zipCode.length !== 7) {

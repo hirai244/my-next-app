@@ -16,7 +16,7 @@ const Header = async () => {
         <Link href="/">header</Link>
       </Button>
       <Button asChild variant="ghost">
-        <Link href="/list">募集一覧</Link>
+        <Link href="/job/list">募集一覧</Link>
       </Button>
       <Button asChild variant="ghost">
         <Link href="/list">お気に入り</Link>
@@ -26,7 +26,7 @@ const Header = async () => {
       </Button>
       {role === "farmer" && (
         <Button asChild variant="ghost">
-          <Link href="/recruitment">募集の新規作成</Link>
+          <Link href="/job/create">募集の新規作成</Link>
         </Button>
       )}
       <span className="flex-1"></span>

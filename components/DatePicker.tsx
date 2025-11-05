@@ -33,11 +33,11 @@ export function DatePicker({ selected, disabled, onChange }: DatePickerProps) {
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
+            mode="single"
             selected={selected}
             captionLayout="dropdown"
             onSelect={(date: Date | undefined) => {
               onChange(date);
-              setOpen(false);
             }}
           />
         </PopoverContent>

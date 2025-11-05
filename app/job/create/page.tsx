@@ -1,5 +1,4 @@
-import { Create } from "@/components/recruitment/Create";
-import { RBBCard } from "@/components/recruitment/RBBCard";
+import { Create } from "@/components/job/Create";
 import { currentUser } from "@/lib/currentUser";
 import { redirect } from "next/navigation";
 

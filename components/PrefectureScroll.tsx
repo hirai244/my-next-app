@@ -1,24 +1,24 @@
 "use client";
 import React from "react";
-import { SelectScrollable } from "../SelectScrollable";
 import { PREFECTURE_OPTIONS } from "@/constants/prefectures";
-import { Path, UseFormReturn } from "react-hook-form";
-import { ProfileFormValues } from "@/schema/profile";
-import { SelectItem } from "../ui/select";
+import { FieldValues, Path, UseFormReturn } from "react-hook-form";
+import { SelectScrollable } from "./SelectScrollable";
+import { SelectItem } from "./ui/select";
+import { RBBCreateValues } from "@/schema/job";
 
-interface PrefectureSelectProps {
-  form: UseFormReturn<ProfileFormValues>;
-  name: Path<ProfileFormValues>;
+interface PrefectureScrollProps {
+  form: UseFormReturn<RBBCreateValues>;
+  name: Path<RBBCreateValues>;
   placeholder: string;
   title: string;
 }
 
-export function PrefectureSelect({
+export function PrefectureScroll({
   form,
   name,
   placeholder,
   title,
-}: PrefectureSelectProps) {
+}: PrefectureScrollProps) {
   return (
     <SelectScrollable
       title={title}
