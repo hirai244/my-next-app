@@ -12,6 +12,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { DatePicker } from "../DatePicker";
 import { DateRangePicker } from "../DateRangePicker";
+import { Textarea } from "../ui/textarea";
 
 interface FormFieldProps {
   name: string;
@@ -26,6 +27,7 @@ interface FormFieldProps {
   className?: string;
   defaultValue?: string;
   unit?: string;
+  rows?: number;
 }
 
 export function FormField({
@@ -40,6 +42,7 @@ export function FormField({
   className,
   defaultValue,
   unit,
+  rows,
 }: FormFieldProps) {
   return (
     <ShadcnFormField
@@ -63,6 +66,14 @@ export function FormField({
                 selected={field.value}
                 onChange={field.onChange}
                 disabled={form.formState.isSubmitting}
+              />
+            ) : type === "textarea" ? (
+              <Textarea
+                placeholder={placeholder}
+                {...field}
+                className={className}
+                rows={rows}
+                defaultValue={defaultValue}
               />
             ) : (
               <div>

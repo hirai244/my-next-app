@@ -1,10 +1,17 @@
 "use server";
 
-import { GetJobsResult, JobCreateValues, JobRow } from "@/schema/job";
+import {
+  GetJobResult,
+  GetJobsResult,
+  JobCreateValues,
+  JobRow,
+} from "@/schema/job";
 import { createClient } from "@/utils/supabase/server";
 import { currentUser } from "./currentUser";
 import { redirect } from "next/navigation";
 import { ActionResult } from "@/schema/shared";
+import { success } from "zod";
+import { create } from "domain";
 
 export async function createJob(data: JobCreateValues): Promise<ActionResult> {
   const user = await currentUser();
@@ -41,10 +48,10 @@ export async function createJob(data: JobCreateValues): Promise<ActionResult> {
       message: rbbError.message || "募集の作成に失敗しました。",
     };
   }
-  redirect("/");
+  redirect("/jog/farmer/dashboard");
 }
-
-export async function getsJob(): Promise<GetJobsResult> {
+//農家側
+export async function getMyJobs(): Promise<GetJobsResult> {
   const user = await currentUser();
   if (!user) {
     return { success: false, message: "認証されてないユーザーです。" };
@@ -71,16 +78,86 @@ export async function getsJob(): Promise<GetJobsResult> {
   return { success: true, data: data || [] };
 }
 
-export async function getJob(id: string) {
+export async function getMyJob(id: string): Promise<GetJobResult> {
   const supabase = await createClient();
 
+  const jobId = parseInt(id, 10);
+  if (isNaN(jobId)) {
+    return {
+      success: false,
+      message: "無効なIDです",
+    };
+  }
   const { data, error } = await supabase
     .from("jobs")
     .select()
-    .eq("id", parseInt(id, 10)) //おそらくsupabaseではnumber型になってるため
+    // .eq("id", id)
+    .eq("id", jobId) //おそらくsupabaseではnumber型になってるため
     .single();
 
   console.log(data, error);
 
-  return data;
+  if (error) {
+    return {
+      success: false,
+      message: "取得中にデータベースエラーが発生しました",
+    };
+  }
+
+  return {
+    success: true,
+    data: data || null,
+  };
+}
+
+//学生側
+
+export async function getJobs(): Promise<GetJobsResult> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("jobs")
+    .select()
+    .order("range_end", { ascending: true });
+
+  console.log(data, error);
+
+  if (error) {
+    return {
+      success: false,
+      message: "取得中にデータベースエラーが発生しました",
+    };
+  }
+  return { success: true, data: data || [] };
+}
+
+export async function getJob(id: string): Promise<GetJobResult> {
+  const supabase = await createClient();
+
+  const jobId = parseInt(id, 10);
+  if (isNaN(jobId)) {
+    return {
+      success: false,
+      message: "無効なIDです",
+    };
+  }
+  const { data, error } = await supabase
+    .from("jobs")
+    .select()
+    // .eq("id", id)
+    .eq("id", jobId) //おそらくsupabaseではnumber型になってるため
+    .single();
+
+  console.log(data, error);
+
+  if (error) {
+    return {
+      success: false,
+      message: "取得中にデータベースエラーが発生しました",
+    };
+  }
+
+  return {
+    success: true,
+    data: data || null,
+  };
 }

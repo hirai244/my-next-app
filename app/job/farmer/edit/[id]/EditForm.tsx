@@ -1,66 +1,47 @@
 "use client";
-import { FormField } from "../forms/FormField";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Form } from "../ui/form";
-import { Button } from "../ui/button";
-import { AddressAutoComplete } from "../AddressAutoComplete";
-import { PrefectureScroll } from "../PrefectureScroll";
-import { JobCreateValues, jobSchema } from "@/schema/job";
+
+import { FormField } from "@/components/forms/FormField";
+import { PrefectureScroll } from "@/components/PrefectureScroll";
+import { Section } from "@/components/Section";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { JobCreateValues, JobRow, jobSchema } from "@/schema/job";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createJob } from "@/lib/jobActions";
-import { toast } from "sonner";
+// import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
-type SectionProps = {
-  title: string;
-  children: React.ReactNode;
-};
+export function EditForm({
+  initialJobData,
+  jobId,
+}: {
+  jobId: string;
+  initialJobData: JobRow;
+}) {
+  // const router = useRouter();
 
-const Section = ({ title, children }: SectionProps) => (
-  <div className="bg-white p-6 rounded-xl shadow-lg">
-    <h2 className="text-xl font-semibold border-b pb-2 mb-4 text-gray-800">
-      {title}
-    </h2>
-    {children}
-  </div>
-);
-
-export function Create() {
   const form = useForm<JobCreateValues>({
     resolver: zodResolver(jobSchema),
-    mode: "onBlur",
     defaultValues: {
-      title: "",
-      date: new Date(),
-      start: "09:00",
-      end: "17:00",
-      zipCode: "",
-      prefecture: "",
-      city: "",
-      addressLine1: "",
-      // member: 1,
-      work_details: "",
+      title: initialJobData.title || "",
+      date: new Date(initialJobData.date),
+      start: initialJobData.start || "",
+      end: initialJobData.end || "",
+      prefecture: initialJobData.prefecture || "",
+      city: initialJobData.city || "",
+      addressLine1: initialJobData.address_line1 || "",
+      work_details: initialJobData.work_details || "",
       range: {
-        from: new Date(),
-        to: new Date(),
+        from: new Date(initialJobData.range_start),
+        to: new Date(initialJobData.range_end),
       },
-      notes: "",
+      zipCode: initialJobData.zip_code || "",
+      notes: initialJobData.notes || "",
     } as JobCreateValues,
   });
 
-  AddressAutoComplete(form);
-
-  const onsubmit: SubmitHandler<JobCreateValues> = async (
-    data: JobCreateValues
-  ) => {
-    const result = await createJob(data);
-    if (result.success) {
-      toast.success("成功", { description: "ご登録ありがとうございます" });
-    } else {
-      toast.error(result.message);
-    }
+  const onsubmit = async () => {
+    console.log("submit");
   };
-
-  //   const errors = form.formState.errors;
 
   return (
     <Form {...form}>

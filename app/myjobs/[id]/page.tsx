@@ -2,9 +2,10 @@
 import { Calendar1, Clock, HandPlatter, MapPin } from "lucide-react";
 import { notFound } from "next/navigation";
 import React from "react";
-import { ApplyForm } from "../ApplyForm";
 import { getRole } from "@/lib/profileActions";
-import { getJob } from "@/lib/jobActions";
+import { getMyJob } from "@/lib/jobActions";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function Page({
   params: { id },
@@ -12,7 +13,7 @@ export default async function Page({
   params: { id: string };
 }) {
   const role = await getRole();
-  const result = await getJob(id);
+  const result = await getMyJob(id);
 
   if (!result.success) {
     notFound();
@@ -81,8 +82,13 @@ export default async function Page({
       </div>
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl p-4 z-50">
         <div className="max-w-4xl mx-auto">
-          <p className="text-sm text-gray-600 mb-2">この募集に応募する</p>
-          <ApplyForm jobId={id} />
+          <p className="text-sm text-gray-600 mb-2">編集する</p>
+          <Button
+            asChild
+            className="w-full py-3 bg-red-500 text-white text-lg font-bold rounded-lg hover:bg-red-600 transition disabled:bg-red-300"
+          >
+            <Link href={`/job/farmer/edit/${id}`}>編集する</Link>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use server";
-import { ProfileFormValues } from "@/schema/profile";
+import { getRoleResult, ProfileFormValues } from "@/schema/profile";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { currentUser } from "./currentUser";
 import { cache } from "react";
 import { ActionResult } from "@/schema/shared";
@@ -28,8 +28,12 @@ export async function createProfile(
   // .select()
   // .single();
   if (profileError) {
-    console.error("Profiles initial UPSERT failed:", profileError);
-    throw new Error("基本情報の初期設定に失敗しました。");
+    return {
+      success: false,
+      message: "プロフィールの作成に失敗しました。",
+    };
+    // console.error("Profiles initial UPSERT failed:", profileError);
+    // throw new Error("基本情報の初期設定に失敗しました。");
   }
   //   まとめてエラーを判定するため
   let detailsError = null;
@@ -65,13 +69,42 @@ export async function createProfile(
   redirect("/");
 }
 
-export const getRole = cache(async () => {
+// export const getRole = cache(async () => {
+//   const user = await currentUser();
+//   if (!user) {
+//     return {
+//       success: false,
+//       message: "認証されてないユーザーです。",
+//     };
+//   }
+
+//   const userId = user.id;
+
+//   const supabase = await createClient();
+
+//   const { data, error } = await supabase
+//     .from("profiles")
+//     .select("role")
+//     .eq("id", userId)
+//     .single();
+
+//   if (error || !data) {
+//     console.error("Failed to fetch user role:", error);
+//     return null;
+//   }
+//   return data.role as "farmer" | "student";
+// });
+
+export async function getRole(): Promise<getRoleResult> {
   const user = await currentUser();
   if (!user) {
-    return null;
+    return {
+      success: false,
+      message: "認証されてないユーザーです。",
+    };
   }
-
   const userId = user.id;
+
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -80,9 +113,18 @@ export const getRole = cache(async () => {
     .eq("id", userId)
     .single();
 
-  if (error || !data) {
-    console.error("Failed to fetch user role:", error);
-    return null;
+  console.log(data, error);
+
+  if (error) {
+    console.error("ロール所得DBエラー:", error);
+    return { success: false, message: "ロールの取得に失敗しました。" };
   }
-  return data.role as "farmer" | "student";
-});
+
+  if (!data || data.role === null) {
+    console.warn(
+      "User ${userId} has no profile or role set, defaulting to 'guest'."
+    );
+    return { success: true, role: "guest" };
+  }
+  return { success: true, role: data.role as "farmer" | "student" };
+}

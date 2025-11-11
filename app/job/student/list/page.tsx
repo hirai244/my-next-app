@@ -1,10 +1,10 @@
-import { JobCardList } from "@/components/job/JobCardList";
 import React from "react";
+import { JobsList } from "./JobsList";
 
 export default function page() {
   return (
     <div>
-      <JobCardList />
+      <JobsList />
     </div>
   );
 }

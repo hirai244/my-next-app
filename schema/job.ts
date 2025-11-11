@@ -69,3 +69,13 @@ export type GetJobsResult =
       success: false;
       message: string;
     };
+
+export type GetJobResult =
+  | {
+      success: true;
+      data: JobRow;
+    }
+  | {
+      success: false;
+      message: string;
+    };
