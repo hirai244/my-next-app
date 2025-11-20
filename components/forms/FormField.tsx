@@ -13,6 +13,8 @@ import { UseFormReturn } from "react-hook-form";
 import { DatePicker } from "../DatePicker";
 import { DateRangePicker } from "../DateRangePicker";
 import { Textarea } from "../ui/textarea";
+import { SelectScroll } from "../SelectScroll";
+import { cn } from "@/lib/utils";
 
 interface FormFieldProps {
   name: string;
@@ -55,11 +57,20 @@ export function FormField({
             {/* チルドレンがある場合 */}
             {children ? (
               children
+            ) : type === "prefecture" ? (
+              <SelectScroll
+                onChange={field.onChange}
+                value={field.value}
+                onBlur={field.onBlur}
+                name={name}
+                placeholder={placeholder}
+                title=""
+              />
             ) : type === "date-picker" ? (
               <DatePicker
+                disabled={form.formState.isSubmitting}
                 selected={field.value}
                 onChange={field.onChange}
-                disabled={form.formState.isSubmitting}
               />
             ) : type === "range-picker" ? (
               <DateRangePicker
@@ -82,7 +93,7 @@ export function FormField({
                   autoComplete={autoComplete}
                   {...field}
                   type={type}
-                  className={className}
+                  className={cn(className, { "w-auto": unit })}
                   defaultValue={defaultValue}
                 />
                 {unit && <span className="ml-2 text-gray-500">{unit}</span>}

@@ -1,6 +1,6 @@
 type SectionProps = {
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 export function Section({ title, children }: SectionProps) {

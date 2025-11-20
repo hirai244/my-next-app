@@ -5,6 +5,8 @@ import { Path, UseFormReturn } from "react-hook-form";
 import { SelectScrollable } from "./SelectScrollable";
 import { SelectItem } from "./ui/select";
 import { JobCreateValues } from "@/schema/job";
+import { registry } from "zod";
+import { SelectScroll } from "./SelectScroll";
 
 interface PrefectureScrollProps {
   form: UseFormReturn<JobCreateValues>;
