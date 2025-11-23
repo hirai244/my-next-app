@@ -1,5 +1,12 @@
-import { ResetPassword } from "@/components/auth/ResetPassword";
+import { ResetPassword } from "@/app/auth/reset-password/ResetPassword";
+import AnimatePageWrapper from "@/components/motion/AnimatePageWrapper";
 
 export default function Page() {
-  return <ResetPassword />;
+  return (
+    <div>
+      <AnimatePageWrapper>
+        <ResetPassword />
+      </AnimatePageWrapper>
+    </div>
+  );
 }

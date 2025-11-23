@@ -1,5 +1,5 @@
 "use client";
-import { FormField } from "../../../../components/forms/FormField";
+import { FormField } from "../../../../components/FormField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Form } from "../../../../components/ui/form";
 import { Button } from "../../../../components/ui/button";

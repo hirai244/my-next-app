@@ -1,6 +1,6 @@
-import SignUpForm from "@/components/auth/SignUpForm";
 import AnimatePageWrapper from "@/components/motion/AnimatePageWrapper";
 import React from "react";
+import { SignUpForm } from "./SignUpForm";
 
 const page = () => {
   return (

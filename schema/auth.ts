@@ -1,6 +1,5 @@
-import { data } from "framer-motion/client";
 import { isStrongPassword } from "validator";
-import z, { email } from "zod";
+import { z } from "zod";
 
 const passwordOptions = {
   minLength: 8,
@@ -11,27 +10,6 @@ const passwordOptions = {
   pointsForContaining: 0,
 };
 
-export const signupSchema = z.object({
-  email: z
-    .string()
-    .email({ message: "有効なメールアドレスを入力してください。" }),
-  password: z.string().superRefine((data, ctx) => {
-    if (!isStrongPassword(data, passwordOptions)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "大文字を含む半角英数字と記号を含めてください。",
-      });
-      return;
-    }
-  }),
-  role: z.enum(["farmer", "student"], {
-    message: "選択してください",
-  }),
-});
-export type SignupFormValues = z.infer<typeof signupSchema>;
-
-//ログイン用のスキーマ
-
 export const authSchema = z.object({
   email: z
     .string()
@@ -40,15 +18,35 @@ export const authSchema = z.object({
     if (!isStrongPassword(data, passwordOptions)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "大文字を含む半角英数字と記号を含めてください。",
+        message: "8文字以上で大文字を含む半角英数字と記号を含めてください。",
       });
+      return;
+    }
+  }),
+  role: z.enum(["farmer", "student"], {
+    required_error: "登録タイプを選択してください。",
+  }),
+});
+export type AuthFormValues = z.infer<typeof authSchema>;
+
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "有効なメールアドレスを入力してください。" }),
+  password: z.string().superRefine((data, ctx) => {
+    if (!isStrongPassword(data, passwordOptions)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "8文字以上で大文字を含む半角英数字と記号を含めてください。",
+      });
+      return;
     }
   }),
 });
+export type LoginFormValues = z.infer<typeof loginSchema>;
 
-export type AuthFormValues = z.infer<typeof authSchema>;
+//…メールアドレス
 
-//パスワードリセットのためのメール送信用のスキーマ
 export const emailSchema = z.object({
   email: z.string().email({
     message: "有効なメールアドレスを入力してください。",

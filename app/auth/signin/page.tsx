@@ -1,6 +1,6 @@
 import React from "react";
-import SignInForm from "@/components/auth/SignInForm";
 import AnimatePageWrapper from "@/components/motion/AnimatePageWrapper";
+import { SignInForm } from "./SignInForm";
 
 export default function SignIn() {
   return (
