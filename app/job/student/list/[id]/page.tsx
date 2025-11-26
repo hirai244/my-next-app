@@ -1,22 +1,34 @@
+"use server";
 import { Section } from "@/components/Section";
+import { hasApplied } from "@/lib/applicationActions";
 import { getJob } from "@/lib/jobActions";
 import { Calendar1, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
+import { ApplyButton } from "../ApplyButton";
+import { currentUser } from "@/lib/currentUser";
 
-export default async function page({
-  params: { id },
-}: {
-  params: { id: string };
-}) {
+type ParamsProps = {
+  params: Promise<{ id: string }>;
+};
+export default async function page({ params }: ParamsProps) {
+  const { id } = await params;
+  const jobId = Number(id);
+  if (isNaN(jobId)) notFound();
+
   const result = await getJob(id);
 
   if (!result.success) {
     notFound();
   }
   const job = result.data;
+  const user = await currentUser();
 
+  let isApplied = false;
+  if (user) {
+    isApplied = await hasApplied(jobId);
+  }
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
       <div className="max-w-4xl mx-auto">
@@ -61,7 +73,6 @@ export default async function page({
           </div>
         </div>
       </div>
-
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
         <Section title="✅ お仕事の内容">
           <p className="whitespace-pre-wrap leading-relaxed text-gray-700">
@@ -85,8 +96,19 @@ export default async function page({
           </Section>
         )}
       </div>
-
-      {/* 応募ボタン */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 shadow-lg safe-area-bottom">
+        <div className="max-w-4xl mx-auto">
+          {user && user.id !== job.farmer_id ? (
+            <ApplyButton jobId={job.id} isApplied={isApplied} />
+          ) : !user ? (
+            <p className="text-center text-sm text-gray-500">
+              応募するにはログインが必要です
+            </p>
+          ) : (
+            <p className="text-center text-sm text-gray-500">自分の募集です</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

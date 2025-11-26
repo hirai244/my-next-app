@@ -1,6 +1,11 @@
 "use server";
 
-import { GetJobResult, GetJobsResult, jobSchema } from "@/schema/job";
+import {
+  GetJobResult,
+  GetJobsResult,
+  GetJobsWithAppliedResult,
+  jobSchema,
+} from "@/schema/job";
 import { createClient } from "@/utils/supabase/server";
 import { currentUser } from "./currentUser";
 import { redirect } from "next/navigation";
@@ -42,14 +47,11 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
       validatedJob.error.flatten().fieldErrors,
       rawJobData
     );
-    //
     return {
       success: false,
       message: "入力内容に不備があります。",
     };
   }
-  const jobValues = validatedJob.data;
-
   let photoUrl: string | null = null;
   const imageFile = rawJobData.jobImage;
 
@@ -78,7 +80,11 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
 
     photoUrl = publicUrlData.publicUrl;
   }
-  if (!jobValues.date || !jobValues.range?.from || !jobValues.range?.to) {
+  if (
+    !validatedJob.data.date ||
+    !validatedJob.data.range?.from ||
+    !validatedJob.data.range?.to
+  ) {
     return {
       success: false,
       message: "必須項目（日付または期間）が不足しています。",
@@ -86,19 +92,19 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
   }
   const { error: insertError } = await supabase.from("jobs").insert({
     farmer_id: farmerId,
-    title: jobValues.title,
-    date: jobValues.date.toISOString(),
-    start: jobValues.start,
-    end: jobValues.end,
-    range_start: jobValues.range.from.toISOString(),
-    range_end: jobValues.range.to.toISOString(),
-    member: jobValues.member,
-    zip_code: jobValues.zipCode,
-    prefecture: jobValues.prefecture,
-    city: jobValues.city,
-    address_line1: jobValues.addressLine1,
-    work_details: jobValues.workDetails,
-    notes: jobValues.notes || null,
+    title: validatedJob.data.title,
+    date: validatedJob.data.date.toISOString(),
+    start: validatedJob.data.start,
+    end: validatedJob.data.end,
+    range_start: validatedJob.data.range.from.toISOString(),
+    range_end: validatedJob.data.range.to.toISOString(),
+    member: validatedJob.data.member,
+    zip_code: validatedJob.data.zipCode,
+    prefecture: validatedJob.data.prefecture,
+    city: validatedJob.data.city,
+    address_line1: validatedJob.data.addressLine1,
+    work_details: validatedJob.data.workDetails,
+    notes: validatedJob.data.notes || null,
     photo_url: photoUrl,
     status: "active",
     current_member: 0,
@@ -160,19 +166,12 @@ export async function getMyJobs(): Promise<GetJobsResult> {
 
 export async function getMyJob(id: string): Promise<GetJobResult> {
   const supabase = await createClient();
+  const jobId = id;
 
-  const jobId = parseInt(id, 10);
-  if (isNaN(jobId)) {
-    return {
-      success: false,
-      message: "無効なIDです",
-    };
-  }
   const { data, error } = await supabase
     .from("jobs")
     .select()
-    // .eq("id", id)
-    .eq("id", jobId) //おそらくsupabaseではnumber型になってるため
+    .eq("id", jobId)
     .single();
 
   console.log(data, error);
@@ -191,39 +190,50 @@ export async function getMyJob(id: string): Promise<GetJobResult> {
 }
 //学生側
 
-export async function getJobs(): Promise<GetJobsResult> {
+export async function getJobs(): Promise<GetJobsWithAppliedResult> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const user = await currentUser();
+
+  const { data: jobs, error: jobsError } = await supabase
     .from("jobs")
     .select()
     .order("range_end", { ascending: true });
 
-  console.log(data, error);
+  console.log(jobs, jobsError);
 
-  if (error) {
+  if (jobsError) {
     return {
       success: false,
       message: "取得中にデータベースエラーが発生しました",
     };
   }
-  return { success: true, data: data || [] };
+  let appliedJobIds: number[] = [];
+  if (user) {
+    const studentId = user.id;
+    const { data: applications } = await supabase
+      .from("applications")
+      .select("job_id")
+      .eq("student_id", studentId);
+
+    if (applications) {
+      appliedJobIds = applications.map((app) => app.job_id);
+    }
+  }
+
+  const jobWithStatus = jobs.map((job) => ({
+    ...job,
+    isApplied: appliedJobIds.includes(job.id),
+  }));
+  return { success: true, data: jobWithStatus };
 }
 
 export async function getJob(id: string): Promise<GetJobResult> {
   const supabase = await createClient();
-
-  const jobId = parseInt(id, 10);
-  if (isNaN(jobId)) {
-    return {
-      success: false,
-      message: "無効なIDです",
-    };
-  }
+  const jobId = id;
   const { data, error } = await supabase
     .from("jobs")
     .select()
-    // .eq("id", id)
-    .eq("id", jobId) //おそらくsupabaseではnumber型になってるため
+    .eq("id", jobId)
     .single();
 
   console.log(data, error);

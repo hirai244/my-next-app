@@ -8,9 +8,14 @@ import { ja } from "date-fns/locale";
 interface JobCardProps {
   job: JobRow;
   href: string;
+  isApplied?: boolean;
 }
 
-export default function JobCard({ job, href }: JobCardProps) {
+export default function JobCard({
+  job,
+  href,
+  isApplied = false,
+}: JobCardProps) {
   const location = job.prefecture
     ? `${job.prefecture} ${job.city}`
     : "場所未定";
@@ -37,8 +42,11 @@ export default function JobCard({ job, href }: JobCardProps) {
               <span className="text-xs font-medium">No Image</span>
             </div>
           )}
-
-          {/* <div className="absolute top-2 right-2 ...">募集中</div> */}
+          {isApplied && (
+            <div className="absolute top-2 right-2 z-20 bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
+              応募済み
+            </div>
+          )}
         </div>
 
         <CardContent className="p-5 flex-1 flex flex-col space-y-3">

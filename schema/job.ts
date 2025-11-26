@@ -1,6 +1,6 @@
 import { PREFECTURE_NAMES } from "@/constants/prefectures";
-import { Tables } from "@/src/lib/database.types";
-import z, { date, number } from "zod";
+import { Tables } from "@/src/lib/supabase";
+import z from "zod";
 
 export type JobRow = Tables<"jobs">;
 export const imageFileSchema = z.custom<FileList | File | undefined | null>(
@@ -98,6 +98,19 @@ export type GetJobResult =
   | {
       success: true;
       data: JobRow;
+    }
+  | {
+      success: false;
+      message: string;
+    };
+
+export type jobWithStatus = JobRow & {
+  isApplied: boolean;
+};
+export type GetJobsWithAppliedResult =
+  | {
+      success: true;
+      data: jobWithStatus[];
     }
   | {
       success: false;

@@ -2,10 +2,10 @@
 import { ActionResult } from "@/schema/shared";
 import { currentUser } from "./currentUser";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import { GetJobResult, GetJobsResult } from "@/schema/job";
+import { GetJobsResult } from "@/schema/job";
+import { revalidatePath } from "next/cache";
 
-export async function applyJob(jobId: string): Promise<ActionResult> {
+export async function applyJob(jobId: number): Promise<ActionResult> {
   const user = await currentUser();
   if (!user) {
     return { success: false, message: "認証されてないユーザーです。" };
@@ -44,8 +44,9 @@ export async function applyJob(jobId: string): Promise<ActionResult> {
       message: "応募の登録中にエラーが発生しました。",
     };
   }
+  revalidatePath(`/job/student/dashboard/${jobId}`);
 
-  redirect("/job/student/work");
+  return { success: true, message: "応募が完了しました。" };
 }
 
 export async function getAppliedJobs(): Promise<GetJobsResult> {
@@ -95,11 +96,23 @@ export async function getAppliedJobs(): Promise<GetJobsResult> {
   };
 }
 
-export async function hasApplied(jobId: number) {
+export async function hasApplied(jobId: number): Promise<boolean> {
   const user = await currentUser();
   if (!user) {
-    return {};
+    return false;
   }
-
+  const studentId = user.id;
   const supabase = await createClient();
+  const { data: application, error } = await supabase
+    .from("applications")
+    .select("id")
+    .eq("job_id", jobId)
+    .eq("student_id", studentId)
+    .maybeSingle();
+  if (error) {
+    console.error("確認エラー：", error);
+    return false;
+  }
+  return !!application;
+  // プロフィールidと紐づける
 }
