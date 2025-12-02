@@ -24,9 +24,9 @@ export const imageFileSchema = z.custom<FileList | File | undefined | null>(
 export const jobSchema = z
   .object({
     title: z.string().min(5, "タイトルは5文字以上です。"),
-    // date: z.coerce.date({
-    //   message: "日付は必須です。",
-    // }),
+    email: z
+      .string()
+      .email({ message: "有効なメールアドレスを入力してください。" }),
     date: z.coerce.date({ message: "日付は必須です。" }).nullable(),
     start: z.string().regex(/^\d{2}:\d{2}$/, "開始時刻は必須です。"),
     end: z.string().regex(/^\d{2}:\d{2}$/, "終了時刻は必須です。"),

@@ -47,7 +47,6 @@ export default function DeleteButton({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" size="sm">
-          {/* 必要ならアイコンを入れる */}
           <Trash2 className="w-4 h-4 mr-2" />
           削除
         </Button>

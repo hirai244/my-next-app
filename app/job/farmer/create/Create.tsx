@@ -18,23 +18,7 @@ import {
   ClipboardList,
   Info,
 } from "lucide-react";
-
-// 🎨 UIコンポーネント: セクション
-type SectionProps = {
-  title: string;
-  icon?: React.ReactNode; // アイコンを追加
-  children: React.ReactNode;
-};
-
-const Section = ({ title, icon, children }: SectionProps) => (
-  <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
-    <div className="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-      {icon && <div className="text-green-600">{icon}</div>}
-      <h2 className="text-xl font-bold text-gray-800">{title}</h2>
-    </div>
-    <div className="space-y-6">{children}</div>
-  </div>
-);
+import { Section } from "@/components/Section";
 
 export function Create() {
   const form = useForm<JobCreateValues>({
@@ -42,6 +26,7 @@ export function Create() {
     mode: "onBlur",
     defaultValues: {
       title: "",
+      email: "",
       date: null,
       start: "09:00",
       end: "17:00",
@@ -120,8 +105,6 @@ export function Create() {
     }
   };
 
-  const { isSubmitting, errors } = form.formState;
-
   return (
     <div className="bg-gray-50 min-h-screen pb-32">
       <div className="max-w-3xl mx-auto px-4 py-8 md:py-12">
@@ -174,10 +157,10 @@ export function Create() {
                   </div>
                 )}
               </div>
-              {errors.jobImage && (
+              {form.formState.errors.jobImage && (
                 <p className="text-red-500 text-sm mt-2 font-medium flex items-center gap-1">
                   <Info className="w-4 h-4" />{" "}
-                  {errors.jobImage.message as string}
+                  {form.formState.errors.jobImage.message as string}
                 </p>
               )}
             </div>
@@ -192,8 +175,14 @@ export function Create() {
                 placeholder="例: 収穫をお手伝いしてください！"
                 type="text"
               />
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  form={form}
+                  name="email"
+                  label="メールアドレス"
+                  type="email"
+                  placeholder=""
+                />
                 <FormField
                   form={form}
                   name="date"
@@ -303,10 +292,10 @@ export function Create() {
               <div className="max-w-3xl mx-auto">
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={form.formState.isSubmitting}
                   className="w-full py-6 text-lg font-bold bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-green-600/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed rounded-xl"
                 >
-                  {isSubmitting ? (
+                  {form.formState.isSubmitting ? (
                     <span className="flex items-center gap-2">
                       <Loader2 className="animate-spin w-5 h-5" /> 作成中...
                     </span>

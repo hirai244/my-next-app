@@ -1,25 +1,33 @@
 "use server";
-import { Calendar1, Clock, MapPin } from "lucide-react";
+import { Calendar1, Clock, MapPin, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import React from "react";
 import { getMyJob } from "@/lib/jobActions";
 import Image from "next/image";
-import { Section } from "@/components/Section";
 import DeleteButton from "../DeleteButton";
+import { currentUser } from "@/lib/currentUser";
+import { Section } from "@/components/Section";
+import Link from "next/link";
+import { getMember } from "@/lib/applicationActions";
 
 export default async function Page({
   params: { id },
 }: {
   params: { id: string };
 }) {
-  //   const role = await getRole();
-  const result = await getMyJob(id);
-
+  const user = await currentUser();
+  if (!user) {
+    return null;
+  }
+  const jobId = Number(id);
+  const result = await getMyJob(jobId);
   if (!result.success) {
     notFound();
   }
-
   const job = result.data;
+
+  const member = await getMember(jobId);
+  //エラー処理を書く
 
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
@@ -42,9 +50,7 @@ export default async function Page({
         <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 leading-tight">
           {job.title}
         </h1>
-        <div className="text-2xl font-bold text-red-600 mb-4">
-          メールアドレスを表示する
-        </div>
+        <div className="text-2xl font-bold  mb-4">{job.email}</div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
           <div className="flex items-center space-x-2">
@@ -61,6 +67,12 @@ export default async function Page({
             <MapPin className="w-4 h-4 text-green-600 shrink-0" />
             <span>
               {job.prefecture} {job.city}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Users className="w-4 h-4 text-green-600 shrink-0" />
+            <span>
+              {member}/{job.member}
             </span>
           </div>
         </div>
@@ -97,6 +109,12 @@ export default async function Page({
           </div>
         </div>
       </div>
+      <Link
+        href={`/job/farmer/dashboard/${job.id}/applications`}
+        className="..."
+      >
+        <div className="text-blue-600 font-bold">📩 応募を確認する</div>
+      </Link>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
 } from "@/schema/auth";
 import { ActionResult } from "@/schema/shared";
 import { createClient } from "@/utils/supabase/server";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 interface SignUpData extends AuthFormValues {
@@ -34,6 +35,7 @@ export async function signInAction(
 // サインアップ関数
 export async function signup(data: SignUpData): Promise<ActionResult> {
   const supabase = await createClient();
+  const origin = (await headers()).get("origin");
 
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email: data.email,
@@ -42,6 +44,7 @@ export async function signup(data: SignUpData): Promise<ActionResult> {
       data: {
         role: data.role,
       },
+      emailRedirectTo: `${origin}/auth/callback?next=/profile/setup`,
     },
   });
 

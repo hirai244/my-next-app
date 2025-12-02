@@ -16,15 +16,15 @@ export type Database = {
           job_id: number
           status: Database["public"]["Enums"]["CREATE TYPE app_status AS ENUM"]
           student_id: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          created_at: string
+          created_at?: string
           id?: number
           job_id: number
           status: Database["public"]["Enums"]["CREATE TYPE app_status AS ENUM"]
           student_id?: string
-          updated_at: string
+          updated_at?: string | null
         }
         Update: {
           created_at?: string
@@ -32,7 +32,7 @@ export type Database = {
           job_id?: number
           status?: Database["public"]["Enums"]["CREATE TYPE app_status AS ENUM"]
           student_id?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -42,33 +42,32 @@ export type Database = {
             referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "applications_student_id_fkey"
-            columns: ["student_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       farmers: {
         Row: {
-          created_at: string
+          created_at: string | null
+          description: string | null
           email: string
           farm_name: string
           id: string
+          location: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
+          description?: string | null
           email: string
           farm_name: string
           id: string
+          location: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
+          description?: string | null
           email?: string
           farm_name?: string
           id?: string
+          location?: string
         }
         Relationships: []
       }
@@ -79,6 +78,7 @@ export type Database = {
           created_at: string
           current_member: number
           date: string
+          email: string
           end: string
           farmer_id: string
           id: number
@@ -100,6 +100,7 @@ export type Database = {
           created_at?: string
           current_member: number
           date: string
+          email: string
           end: string
           farmer_id?: string
           id?: number
@@ -121,6 +122,7 @@ export type Database = {
           created_at?: string
           current_member?: number
           date?: string
+          email?: string
           end?: string
           farmer_id?: string
           id?: number
@@ -136,15 +138,7 @@ export type Database = {
           work_details?: string
           zip_code?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "recruitments_farmer_id_fkey"
-            columns: ["farmer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -166,25 +160,31 @@ export type Database = {
       }
       students: {
         Row: {
-          created_at: string
+          bio: string | null
+          created_at: string | null
           email: string
           full_name: string
           id: string
-          university: string | null
+          location: string
+          university: string
         }
         Insert: {
-          created_at?: string
+          bio?: string | null
+          created_at?: string | null
           email: string
           full_name: string
           id?: string
-          university?: string | null
+          location: string
+          university: string
         }
         Update: {
-          created_at?: string
+          bio?: string | null
+          created_at?: string | null
           email?: string
           full_name?: string
           id?: string
-          university?: string | null
+          location?: string
+          university?: string
         }
         Relationships: []
       }

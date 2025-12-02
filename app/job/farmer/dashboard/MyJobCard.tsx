@@ -42,8 +42,6 @@ export default function MyJobCard({ job, href }: MyJobCardProps) {
               <span className="text-xs font-medium">No Image</span>
             </div>
           )}
-
-          {/* <div className="absolute top-2 right-2 ...">募集中</div> */}
         </div>
 
         <CardContent className="p-5 flex-1 flex flex-col space-y-3">

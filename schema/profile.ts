@@ -1,6 +1,6 @@
 import { PREFECTURE_NAMES } from "@/constants/prefectures";
-import { Description } from "@radix-ui/react-dialog";
 import { z } from "zod";
+import { emailSchema } from "./auth";
 // 農
 export const farmerSchema = z.object({
   farmName: z.string().min(1, "農園名は必須です。"),
@@ -8,6 +8,9 @@ export const farmerSchema = z.object({
     message: "所在地を選択してください。",
   }),
   description: z.string().optional(),
+  email: z.string().email({
+    message: "有効なメールアドレスを入力してください。",
+  }),
 });
 export type FarmerFormValues = z.infer<typeof farmerSchema>;
 
@@ -19,5 +22,8 @@ export const studentSchema = z.object({
     message: "所在地を選択してください。",
   }),
   bio: z.string().optional(),
+  email: z.string().email({
+    message: "有効なメールアドレスを入力してください。",
+  }),
 });
 export type StudentFormValues = z.infer<typeof studentSchema>;

@@ -7,7 +7,6 @@ export default async function Page() {
   if (!user) {
     return redirect("/auth/signin");
   }
-  //className="grid lg:grid-cols-3"
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <div className="max-w-4xl mx-auto py-8 px-6">

@@ -42,7 +42,7 @@ export async function Header() {
         {user ? (
           <>
             <Button asChild variant="ghost">
-              <Link href="/mypage">マイページ</Link>
+              <Link href="/profile/setup">マイページ</Link>
             </Button>
             <form action={signOutAction}>
               <Button variant="outline">ログアウト</Button>

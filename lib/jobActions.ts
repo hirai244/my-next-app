@@ -11,17 +11,30 @@ import { currentUser } from "./currentUser";
 import { redirect } from "next/navigation";
 import { ActionResult } from "@/schema/shared";
 import { revalidatePath } from "next/cache";
+import { getFarmerId } from "./profileActions";
+import { get } from "http";
 
 export async function createJob(formData: FormData): Promise<ActionResult> {
   const user = await currentUser();
   if (!user) {
     return { success: false, message: "認証されてないユーザーです。" };
   }
-  const farmerId = user.id;
+
+  const result = await getFarmerId();
+
+  if (!result.success) {
+    return {
+      success: false,
+      message: result.message,
+    };
+  }
+  const farmerId = result.data;
+
   const supabase = await createClient();
 
   const rawJobData = {
-    title: formData.get("title"), //name属性の値
+    title: formData.get("title"),
+    email: formData.get("email"),
     date: formData.get("date"),
     start: formData.get("start"),
     end: formData.get("end"),
@@ -61,6 +74,7 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
       fileNameParts.length > 1 ? fileNameParts.pop() : "bin";
 
     const filePath = `job_photos/${user.id}/${Date.now()}.${fileExtension}`;
+
     const { error: uploadError } = await supabase.storage
       .from("job_photos")
       .upload(filePath, imageFile);
@@ -73,7 +87,6 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
       };
     }
 
-    // 4-2. 公開 URL の取得
     const { data: publicUrlData } = supabase.storage
       .from("job_photos")
       .getPublicUrl(filePath);
@@ -93,6 +106,7 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
   const { error: insertError } = await supabase.from("jobs").insert({
     farmer_id: farmerId,
     title: validatedJob.data.title,
+    email: validatedJob.data.email,
     date: validatedJob.data.date.toISOString(),
     start: validatedJob.data.start,
     end: validatedJob.data.end,
@@ -143,7 +157,14 @@ export async function getMyJobs(): Promise<GetJobsResult> {
     return { success: false, message: "認証されてないユーザーです。" };
   }
 
-  const farmerId = user.id;
+  const result = await getFarmerId();
+  if (!result.success) {
+    return {
+      success: false,
+      message: result.message,
+    };
+  }
+  const farmerId = result.data;
 
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -164,9 +185,8 @@ export async function getMyJobs(): Promise<GetJobsResult> {
   return { success: true, data: data || [] };
 }
 
-export async function getMyJob(id: string): Promise<GetJobResult> {
+export async function getMyJob(jobId: number): Promise<GetJobResult> {
   const supabase = await createClient();
-  const jobId = id;
 
   const { data, error } = await supabase
     .from("jobs")
@@ -227,9 +247,8 @@ export async function getJobs(): Promise<GetJobsWithAppliedResult> {
   return { success: true, data: jobWithStatus };
 }
 
-export async function getJob(id: string): Promise<GetJobResult> {
+export async function getJob(jobId: number): Promise<GetJobResult> {
   const supabase = await createClient();
-  const jobId = id;
   const { data, error } = await supabase
     .from("jobs")
     .select()

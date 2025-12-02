@@ -1,8 +1,8 @@
 "use server";
 import { Section } from "@/components/Section";
-import { hasApplied } from "@/lib/applicationActions";
+import { getApplicationResult, getMember } from "@/lib/applicationActions";
 import { getJob } from "@/lib/jobActions";
-import { Calendar1, Clock, MapPin } from "lucide-react";
+import { Calendar1, Clock, MapPin, Users } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -17,18 +17,18 @@ export default async function page({ params }: ParamsProps) {
   const jobId = Number(id);
   if (isNaN(jobId)) notFound();
 
-  const result = await getJob(id);
-
+  const result = await getJob(jobId);
   if (!result.success) {
     notFound();
   }
   const job = result.data;
-  const user = await currentUser();
 
-  let isApplied = false;
-  if (user) {
-    isApplied = await hasApplied(jobId);
-  }
+  const member = await getMember(jobId);
+
+  const appResult = await getApplicationResult(jobId);
+
+  const currentStatus = appResult.success ? appResult.status : null;
+
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
       <div className="max-w-4xl mx-auto">
@@ -43,16 +43,16 @@ export default async function page({ params }: ParamsProps) {
               priority
             />
           ) : (
-            <div className="bg-gray-200 flex items-center justify-center"></div>
+            <div className="bg-gray-200 flex items-center justify-center">
+              画像
+            </div>
           )}
         </div>
 
         <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 leading-tight">
           {job.title}
         </h1>
-        <div className="text-2xl font-bold text-red-600 mb-4">
-          メールアドレスを表示する
-        </div>
+        <div className="text-2xl font-bold  mb-4">{job.email}</div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
           <div className="flex items-center space-x-2">
@@ -69,6 +69,12 @@ export default async function page({ params }: ParamsProps) {
             <MapPin className="w-4 h-4 text-green-600 shrink-0" />
             <span>
               {job.prefecture} {job.city}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Users className="w-4 h-4 text-green-600 shrink-0" />
+            <span>
+              {member}/{job.member}
             </span>
           </div>
         </div>
@@ -96,17 +102,9 @@ export default async function page({ params }: ParamsProps) {
           </Section>
         )}
       </div>
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 shadow-lg safe-area-bottom">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <div className="max-w-4xl mx-auto">
-          {user && user.id !== job.farmer_id ? (
-            <ApplyButton jobId={job.id} isApplied={isApplied} />
-          ) : !user ? (
-            <p className="text-center text-sm text-gray-500">
-              応募するにはログインが必要です
-            </p>
-          ) : (
-            <p className="text-center text-sm text-gray-500">自分の募集です</p>
-          )}
+          <ApplyButton jobId={jobId} currentStatus={currentStatus} />
         </div>
       </div>
     </div>
