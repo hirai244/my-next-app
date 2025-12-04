@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, FieldValues } from "react-hook-form";
 import { DatePicker } from "./DatePicker";
 import { DateRangePicker } from "./DateRangePicker";
 import { Textarea } from "./ui/textarea";
