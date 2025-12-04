@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 interface FormFieldProps {
   name: string;
   label: string;
-  form: UseFormReturn<any>;
+  form: UseFormReturn<FieldValues>;
   type?: string;
   placeholder?: string;
   autoComplete?: string;
