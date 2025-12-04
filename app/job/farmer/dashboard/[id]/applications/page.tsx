@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ApplicantCard } from "./ApplicantCard";
+import { ApplicantCard, Application } from "./ApplicantCard";
 import { getMyJob } from "@/lib/jobActions";
 import { getApplications } from "@/lib/applicationActions";
 
@@ -32,7 +32,7 @@ export default async function page({ params }: ParamsProps) {
             <p>まだ応募はありません。</p>
           </div>
         ) : (
-          applications.map((app: any) => (
+          applications.map((app: Application) => (
             <ApplicantCard key={app.id} application={app} />
           ))
         )}

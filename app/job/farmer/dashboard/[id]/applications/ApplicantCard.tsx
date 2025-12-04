@@ -8,7 +8,7 @@ import { Badge, Loader2 } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
-type Application = {
+export type Application = {
   id: number;
   message: string;
   status: "pending" | "accepted" | "rejected";
