@@ -9,17 +9,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import React from "react";
-import { UseFormReturn, FieldValues } from "react-hook-form";
+import { UseFormReturn, FieldValues, Path } from "react-hook-form";
 import { DatePicker } from "./DatePicker";
 import { DateRangePicker } from "./DateRangePicker";
 import { Textarea } from "./ui/textarea";
 import { SelectScroll } from "./SelectScroll";
 import { cn } from "@/lib/utils";
 
-interface FormFieldProps {
-  name: string;
+interface FormFieldProps<T extends FieldValues> {
+  name: Path<T>;
   label: string;
-  form: UseFormReturn<FieldValues>;
+  form: UseFormReturn<T>;
   type?: string;
   placeholder?: string;
   autoComplete?: string;
@@ -32,7 +32,7 @@ interface FormFieldProps {
   rows?: number;
 }
 
-export function FormField({
+export function FormField<T extends FieldValues>({
   name,
   label,
   form,
@@ -45,7 +45,7 @@ export function FormField({
   defaultValue,
   unit,
   rows,
-}: FormFieldProps) {
+}: FormFieldProps<T>) {
   return (
     <ShadcnFormField
       control={form.control} //
