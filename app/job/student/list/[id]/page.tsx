@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import { ApplyButton } from "../ApplyButton";
 import { currentUser } from "@/lib/currentUser";
+import DeleteButton from "../../work/DeleteButton";
 
 type ParamsProps = {
   params: Promise<{ id: string }>;
@@ -102,6 +103,11 @@ export default async function page({ params }: ParamsProps) {
           </Section>
         )}
       </div>
+      {/* レイアウトを考える */}
+      <div className="max-w-4xl mx-auto">
+        <DeleteButton jobId={job.id} isDetailView={true} />
+      </div>
+
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <div className="max-w-4xl mx-auto">
           <ApplyButton jobId={jobId} currentStatus={currentStatus} />

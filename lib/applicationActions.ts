@@ -183,12 +183,11 @@ export async function getMember(jobId: number) {
   }
   return count || 0;
 }
-export type ApplicationStatus = "pending" | "accepted" | "rejected" | null;
 
+export type ApplicationStatus = "pending" | "accepted" | "rejected" | null;
 type ApplicationResult =
   | { success: true; status: ApplicationStatus }
   | { success: false; message: string };
-
 export async function getApplicationResult(
   jobId: number
 ): Promise<ApplicationResult> {
@@ -219,4 +218,44 @@ export async function getApplicationResult(
     return { success: true, status: null };
   }
   return { success: true, status: data.status as ApplicationStatus };
+}
+type DeleteResult = {
+  success: boolean;
+  message: string;
+};
+export async function deleteApplication(jobId: number): Promise<DeleteResult> {
+  const supabase = await createClient();
+
+  const result = await getStudentId();
+  if (!result.success) {
+    return {
+      success: false,
+      message: result.message,
+    };
+  }
+  const studentId = result.data;
+  const { data, error } = await supabase
+    .from("applications")
+    .delete()
+    .eq("job_id", jobId)
+    .eq("student_id", studentId)
+    .eq("status", "pending")
+    .select();
+  if (error) {
+    return {
+      success: false,
+      message: "応募削除中にデータベースエラーが発生しました",
+    };
+  }
+  if (!data || data.length === 0) {
+    return {
+      success: false,
+      message: "消去対象が見つかりませんでした。",
+    };
+  }
+  return {
+    success: true,
+    message: "削除成功",
+  };
+  // 成功した場合の遷移をつえる
 }
