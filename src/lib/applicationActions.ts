@@ -140,7 +140,7 @@ export async function getApplications(
     university,
     location,
     bio,
-    email  
+    email,
     created_at,
     id
     )` //emailの後にカンマがついてるとエラーになるsupabase側が続きがあると思ってしまう
