@@ -1,8 +1,7 @@
-"use server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import React from "react";
-import MyJobCard from "./MyJobCard";
 import { getMyJobs } from "@/src/lib/jobActions";
+import { MyJobCard } from "./MyJobCard";
 
 export async function MyJobsList() {
   const result = await getMyJobs();

@@ -1,19 +1,18 @@
-"use server";
 import Link from "next/link";
 import { MapPin, Calendar, Clock, ImageOff } from "lucide-react";
 import { Card, CardContent } from "@/src/components/ui/card";
 import Image from "next/image";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import DeleteButton from "./[id]/DeleteButton";
 import { JobRow } from "@/src/types/shared";
+import DeleteButton from "./[id]/DeleteButton";
 
 interface MyJobCardProps {
   job: JobRow;
   href: string;
 }
 
-export default function MyJobCard({ job, href }: MyJobCardProps) {
+export function MyJobCard({ job, href }: MyJobCardProps) {
   const location = job.prefecture
     ? `${job.prefecture} ${job.city}`
     : "場所未定";
