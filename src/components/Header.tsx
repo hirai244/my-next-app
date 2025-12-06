@@ -6,7 +6,7 @@ import { signOutAction } from "../lib/authActions";
 
 export async function Header() {
   const user = await currentUser();
-  const role = user?.user_metadata.role;
+  const role = user?.role;
 
   return (
     <header className="h-16 border-b px-6 flex items-center bg-white">

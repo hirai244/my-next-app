@@ -26,10 +26,12 @@ export default async function page({ params }: ParamsProps) {
 
   const job = jobRes.data;
   if (!appsRes.success) {
-    return {
-      supers: false,
-      message: appsRes.message,
-    };
+    return (
+      <div className="p-10 text-center text-red-600">
+        <p>データの取得に失敗しました。</p>
+        <p className="text-sm text-gray-500">{appsRes.message}</p>
+      </div>
+    );
   }
   const applications = appsRes.data || [];
   return (
