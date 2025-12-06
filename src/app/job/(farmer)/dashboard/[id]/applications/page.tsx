@@ -33,7 +33,7 @@ export default async function page({ params }: ParamsProps) {
       </div>
     );
   }
-  const applications = appsRes.data || [];
+  const applications = (appsRes.data || []) as Application[];
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <div className="bg-white border-b px-6 py-8">
