@@ -1,14 +1,22 @@
 "use server";
-import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
-
-// 認証　ログインしてるか
-export const currentUser = cache(async () => {
+import { createClient } from "./supabase/server";
+type safeUser = {
+  role: "farmer" | "student" | null;
+  id: string;
+};
+export const currentUser = cache(async (): Promise<safeUser | null> => {
   const supabase = await createClient();
   const {
-    // 帰ってくるデータ
     data: { user },
   } = await supabase.auth.getUser();
-  console.log(user?.user_metadata.role);
-  return user;
+  if (!user) {
+    return null;
+  }
+  const role = user.user_metadata?.role;
+  const safeRole = role === "farmer" || role === "student" ? role : null;
+  return {
+    role: safeRole,
+    id: user.id,
+  };
 });

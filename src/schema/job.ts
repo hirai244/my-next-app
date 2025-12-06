@@ -1,8 +1,6 @@
 import { PREFECTURE_NAMES } from "@/src/constants/prefectures";
-import { Tables } from "@/src/types/supabase";
 import z from "zod";
 
-export type JobRow = Tables<"jobs">;
 export const imageFileSchema = z.custom<FileList | File | undefined | null>(
   (val) => {
     const isServer = typeof FileList === "undefined";
@@ -52,67 +50,25 @@ export const jobSchema = z
     notes: z.string().optional(),
     jobImage: imageFileSchema,
   })
-  .refine(
-    (data) => {
-      if (!data.start || !data.end) return true;
-
-      const [startH, startM] = data.start.split(":").map(Number);
-      const [endH, endM] = data.end.split(":").map(Number);
-
-      const totalStartMinutes = startH * 60 + startM;
-      const totalEndMinutes = endH * 60 + endM;
-      return totalStartMinutes < totalEndMinutes;
-    },
-    {
-      message: "終了時刻は開始時刻よりも後の時刻でなければなりません。",
-      path: ["end"],
-    }
-  )
   .refine((data) => data.date !== null, {
-    message: "日付は必須です。",
+    message: "作業日を入力してください。",
     path: ["date"],
   })
   .refine(
     (data) => {
-      if (data.range === null) return false;
-      return data.range.from !== null && data.range.to !== null;
+      if (!data.range || !data.range.from || !data.range.to) return false;
+      return true;
+    },
+    { message: "募集期間（開始・終了）を設定してください。", path: ["range"] }
+  )
+  .refine(
+    (data) => {
+      if (!data.date || !data.range?.to) return true;
+      return data.range.to <= data.date;
     },
     {
-      message: "開始日と終了日の両方を選択してください。",
+      message: "募集終了日は、作業日と同じかそれより前に設定してください。",
       path: ["range"],
     }
   );
 export type JobCreateValues = z.infer<typeof jobSchema>;
-
-export type GetJobsResult =
-  | {
-      success: true;
-      data: JobRow[];
-    }
-  | {
-      success: false;
-      message: string;
-    };
-
-export type GetJobResult =
-  | {
-      success: true;
-      data: JobRow;
-    }
-  | {
-      success: false;
-      message: string;
-    };
-
-export type jobWithStatus = JobRow & {
-  isApplied: boolean;
-};
-export type GetJobsWithAppliedResult =
-  | {
-      success: true;
-      data: jobWithStatus[];
-    }
-  | {
-      success: false;
-      message: string;
-    };

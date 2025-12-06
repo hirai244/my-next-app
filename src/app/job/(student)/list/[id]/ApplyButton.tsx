@@ -1,9 +1,11 @@
 "use client";
 import { Button } from "@/src/components/ui/button";
-import { ApplicationStatus, applyJob } from "@/lib/applicationActions";
+import { ApplicationStatus, applyJob } from "@/src/lib/applicationActions";
+import { currentUser } from "@/src/lib/currentUser";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import DeleteButton from "../../work/DeleteButton";
 
 type ApplyButtonProps = {
   jobId: number;
@@ -37,19 +39,20 @@ export function ApplyButton({ jobId, currentStatus }: ApplyButtonProps) {
   }
 
   if (currentStatus === "pending") {
-    return (
-      <Button
-        disabled
-        className="w-full py-6 bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-50 opacity-100 cursor-default"
-      >
-        <CheckCircle className="mr-2 h-5 w-5" />
-        選考中
-      </Button>
-    );
+    return <DeleteButton jobId={jobId} isDetailView={true} />;
   }
 
   const handleApply = async () => {
     startTransition(async () => {
+      const user = await currentUser();
+      if (!user) {
+        toast.error("ログインが必要です。");
+        return;
+      }
+      if (user.role !== "student") {
+        toast.error("学生のみ応募できます");
+        return;
+      }
       const result = await applyJob(jobId);
       if (result.success) {
         toast.success(result.message);

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { JobRow } from "@/src/schema/job";
 import { MapPin, Calendar, Clock, ImageOff } from "lucide-react";
 import { Card, CardContent } from "@/src/components/ui/card";
 import Image from "next/image";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
+import { JobRow } from "@/src/types/shared";
 interface JobCardProps {
   job: JobRow;
   href: string;

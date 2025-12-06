@@ -14,7 +14,7 @@ import { DatePicker } from "./DatePicker";
 import { DateRangePicker } from "./DateRangePicker";
 import { Textarea } from "./ui/textarea";
 import { SelectScroll } from "./SelectScroll";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 
 interface FormFieldProps<T extends FieldValues> {
   name: Path<T>;
@@ -25,7 +25,6 @@ interface FormFieldProps<T extends FieldValues> {
   autoComplete?: string;
   description?: string | React.ReactNode;
   children?: React.ReactNode;
-  isCusutomInput?: boolean;
   className?: string;
   defaultValue?: string;
   unit?: string;
@@ -54,7 +53,6 @@ export function FormField<T extends FieldValues>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            {/* チルドレンがある場合 */}
             {children ? (
               children
             ) : type === "prefecture" ? (

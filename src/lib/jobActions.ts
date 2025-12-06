@@ -1,18 +1,12 @@
 "use server";
 
-import {
-  GetJobResult,
-  GetJobsResult,
-  GetJobsWithAppliedResult,
-  jobSchema,
-} from "@/src/schema/job";
-import { createClient } from "@/utils/supabase/server";
+import { jobSchema } from "@/src/schema/job";
 import { currentUser } from "./currentUser";
 import { redirect } from "next/navigation";
-import { ActionResult } from "@/src/schema/shared";
+import { ActionResult, GetJobsResult, JobRow } from "@/src/types/shared";
 import { revalidatePath } from "next/cache";
 import { getFarmerId } from "./profileActions";
-import { get } from "http";
+import { createClient } from "./supabase/server";
 
 export async function createJob(formData: FormData): Promise<ActionResult> {
   const user = await currentUser();
@@ -21,7 +15,6 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
   }
 
   const result = await getFarmerId();
-
   if (!result.success) {
     return {
       success: false,
@@ -31,7 +24,6 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
   const farmerId = result.data;
 
   const supabase = await createClient();
-
   const rawJobData = {
     title: formData.get("title"),
     email: formData.get("email"),
@@ -100,7 +92,7 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
   ) {
     return {
       success: false,
-      message: "必須項目（日付または期間）が不足しています。",
+      message: "日付と期間が不足しています。",
     };
   }
   const { error: insertError } = await supabase.from("jobs").insert({
@@ -135,10 +127,21 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
   redirect("/job/farmer/dashboard");
 }
 
-export async function deleteJob(jobId: number) {
+export async function deleteJob(jobId: number): Promise<ActionResult> {
+  const user = await currentUser();
+  if (!user) {
+    return { success: false, message: "認証されてないユーザーです。" };
+  }
+  if (user.role !== "farmer") {
+    return { success: false, message: "権限がありません。" };
+  }
   const supabase = await createClient();
 
-  const { error } = await supabase.from("jobs").delete().eq("id", jobId);
+  const { error } = await supabase
+    .from("jobs")
+    .delete()
+    .eq("id", jobId)
+    .eq("farmer_id", user.id);
 
   if (error) {
     console.error("削除エラー:", error);
@@ -150,11 +153,13 @@ export async function deleteJob(jobId: number) {
 }
 
 //農家側
-
 export async function getMyJobs(): Promise<GetJobsResult> {
   const user = await currentUser();
   if (!user) {
     return { success: false, message: "認証されてないユーザーです。" };
+  }
+  if (user.role !== "farmer") {
+    return { success: false, message: "権限がありません。" };
   }
 
   const result = await getFarmerId();
@@ -170,7 +175,6 @@ export async function getMyJobs(): Promise<GetJobsResult> {
   const { data, error } = await supabase
     .from("jobs")
     .select()
-    // .select("*")
     .eq("farmer_id", farmerId);
 
   console.log(data, error);
@@ -184,19 +188,49 @@ export async function getMyJobs(): Promise<GetJobsResult> {
 
   return { success: true, data: data || [] };
 }
+export type GetJobResult =
+  | {
+      success: true;
+      data: JobRow;
+    }
+  | {
+      success: false;
+      message: string;
+    };
 
 export async function getMyJob(jobId: number): Promise<GetJobResult> {
+  const user = await currentUser();
+  if (!user) {
+    return { success: false, message: "認証されてないユーザーです。" };
+  }
+  if (user.role !== "farmer") {
+    return { success: false, message: "権限がありません。" };
+  }
+  const result = await getFarmerId();
+  if (!result.success) {
+    return {
+      success: false,
+      message: result.message,
+    };
+  }
+  const farmerId = result.data;
   const supabase = await createClient();
-
   const { data, error } = await supabase
     .from("jobs")
     .select()
     .eq("id", jobId)
+    .eq("farmer_id", farmerId)
     .single();
 
   console.log(data, error);
 
   if (error) {
+    if (error.code === "PGRST116") {
+      return {
+        success: false,
+        message: "指定された募集は見つかりませんでした。",
+      };
+    }
     return {
       success: false,
       message: "取得中にデータベースエラーが発生しました",
@@ -209,7 +243,18 @@ export async function getMyJob(jobId: number): Promise<GetJobResult> {
   };
 }
 //学生側
-
+export type jobWithStatus = JobRow & {
+  isApplied: boolean;
+};
+export type GetJobsWithAppliedResult =
+  | {
+      success: true;
+      data: jobWithStatus[];
+    }
+  | {
+      success: false;
+      message: string;
+    };
 export async function getJobs(): Promise<GetJobsWithAppliedResult> {
   const supabase = await createClient();
   const user = await currentUser();

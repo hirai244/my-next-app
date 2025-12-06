@@ -1,32 +1,41 @@
 "use server";
 import { Calendar1, Clock, MapPin, Users } from "lucide-react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import React from "react";
-import { getMyJob } from "@/lib/jobActions";
 import Image from "next/image";
-import DeleteButton from "../DeleteButton";
-import { currentUser } from "@/lib/currentUser";
+import DeleteButton from "./DeleteButton";
 import { Section } from "@/src/components/Section";
 import Link from "next/link";
-import { getMember } from "@/lib/applicationActions";
+import { currentUser } from "@/src/lib/currentUser";
+import { getMyJob } from "@/src/lib/jobActions";
+import { getMember } from "@/src/lib/applicationActions";
+import { Button } from "@/src/components/ui/button";
+type ParamsProps = {
+  params: Promise<{ id: string }>;
+};
+export default async function Page({ params }: ParamsProps) {
+  const { id } = await params;
+  const jobId = Number(id);
+  if (isNaN(jobId)) notFound();
 
-export default async function Page({
-  params: { id },
-}: {
-  params: { id: string };
-}) {
   const user = await currentUser();
   if (!user) {
-    return null;
+    redirect("/login");
   }
-  const jobId = Number(id);
+  if (user.role !== "farmer") {
+    notFound();
+  }
+
   const result = await getMyJob(jobId);
   if (!result.success) {
-    notFound();
+    return {
+      success: false,
+      message: result.message,
+    };
   }
   const job = result.data;
 
-  const member = await getMember(jobId);
+  const nowMember = await getMember(jobId);
   //エラー処理を書く
 
   return (
@@ -72,7 +81,7 @@ export default async function Page({
           <div className="flex items-center space-x-2">
             <Users className="w-4 h-4 text-green-600 shrink-0" />
             <span>
-              {member}/{job.member}
+              {nowMember}/{job.member}
             </span>
           </div>
         </div>
@@ -101,20 +110,21 @@ export default async function Page({
           </Section>
         )}
       </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-200 p-4 z-50 safe-area-bottom shadow-lg">
-        <div className="max-w-4xl mx-auto">
-          <div className="w-full">
+      <div className="fixed bottom-0 ...">
+        <div className="max-w-4xl mx-auto flex gap-4 items-center">
+          <Link
+            href={`/job/farmer/dashboard/${job.id}/applications`}
+            className="flex-1"
+          >
+            <Button className="w-full py-6 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg">
+              📩 応募者を見る ({/* ここに応募数入れる */})
+            </Button>
+          </Link>
+          <div className="w-auto">
             <DeleteButton jobId={job.id} isDetailView={true} />
           </div>
         </div>
       </div>
-      <Link
-        href={`/job/farmer/dashboard/${job.id}/applications`}
-        className="..."
-      >
-        <div className="text-blue-600 font-bold">📩 応募を確認する</div>
-      </Link>
     </div>
   );
 }

@@ -1,29 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { FormField } from "@/src/components/FormField";
 import { Button } from "@/src/components/ui/button";
 import { Form } from "@/src/components/ui/form";
-import { Spinner } from "@/src/components/ui/spinner";
-import { createProfile } from "@/lib/profileActions";
 import { StudentFormValues, studentSchema } from "@/src/schema/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import {
-  Camera,
-  User,
-  School,
-  MapPin,
-  Mail,
-  FileText,
-  Loader2,
-} from "lucide-react";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { User, School, MapPin, Mail, FileText, Loader2 } from "lucide-react";
+import { createProfile } from "@/src/lib/profileActions";
 export function StudentForm() {
-  // const [imagePreview, setImagePreview] = useState<string | null>(null);
-
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
@@ -42,9 +28,6 @@ export function StudentForm() {
     formData.append("bio", data.bio || "");
     formData.append("location", data.location);
     formData.append("email", data.email);
-    // 将来的にここで画像をformDataに追加します
-    // if (imageFile) formData.append("avatar", imageFile);
-
     const result = await createProfile(formData);
 
     if (!result.success) {
@@ -53,17 +36,6 @@ export function StudentForm() {
     }
     toast.success("登録完了");
   };
-
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setImagePreview(reader.result as string);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -78,29 +50,6 @@ export function StudentForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {/* <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="relative group cursor-pointer">
-              <Avatar className="w-28 h-28 border-4 border-white shadow-lg">
-                <AvatarImage
-                  src={imagePreview || ""}
-                  className="object-cover"
-                />
-                <AvatarFallback className="bg-gray-100">
-                  <User className="w-12 h-12 text-gray-400" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                <Camera className="w-8 h-8 text-white" />
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                onChange={handleImageChange}
-              />
-            </div>
-            <p className="text-xs text-gray-500">プロフィール写真を設定</p>
-          </div> */}
           <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">

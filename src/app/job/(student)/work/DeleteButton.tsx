@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/src/components/ui/alert-dialog";
 import { Button } from "@/src/components/ui/button";
-import { deleteApplication } from "@/lib/applicationActions";
+import { deleteApplication } from "@/src/lib/applicationActions";
 import { Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useTransition } from "react";
@@ -68,7 +68,7 @@ export default function DeleteButton({
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 辞退中...
               </>
             ) : (
-              "削除する"
+              "辞退する"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

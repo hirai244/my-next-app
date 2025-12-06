@@ -1,14 +1,12 @@
 "use client";
-import { FormField } from "../../../../components/FormField";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Form } from "../../../../components/ui/form";
-import { Button } from "../../../../components/ui/button";
-import { useAddressAutoComplete } from "../../../../components/AddressAutoComplete";
+import { Form } from "@/src/components/ui/form";
+import { Button } from "@/src/components/ui/button";
+import { useAddressAutoComplete } from "@/src/components/AddressAutoComplete";
 import { JobCreateValues, jobSchema } from "@/src/schema/job";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { createJob } from "@/lib/jobActions";
 import Image from "next/image";
 import {
   Loader2,
@@ -19,6 +17,8 @@ import {
   Info,
 } from "lucide-react";
 import { Section } from "@/src/components/Section";
+import { createJob } from "@/src/lib/jobActions";
+import { FormField } from "@/src/components/FormField";
 
 export function Create() {
   const form = useForm<JobCreateValues>({
@@ -46,8 +46,6 @@ export function Create() {
     },
   });
 
-  useAddressAutoComplete(form);
-
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const watchedJobImage = form.watch("jobImage");
 
@@ -70,6 +68,7 @@ export function Create() {
       setImagePreview(null);
     }
   }, [watchedJobImage]);
+  useAddressAutoComplete(form);
 
   const onsubmit: SubmitHandler<JobCreateValues> = async (data) => {
     const formData = new FormData();
@@ -199,7 +198,6 @@ export function Create() {
                   unit="人"
                 />
               </div>
-
               <div className="grid grid-cols-2 gap-6">
                 <FormField
                   form={form}

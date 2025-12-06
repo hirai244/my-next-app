@@ -1,13 +1,10 @@
 "use server";
-import { ActionResult } from "@/src/schema/shared";
+import { ActionResult, GetJobsResult } from "@/src/types/shared";
 import { currentUser } from "./currentUser";
-import { createClient } from "@/utils/supabase/server";
-import { GetJobsResult } from "@/src/schema/job";
 import { revalidatePath } from "next/cache";
-import { create } from "domain";
 import { getStudentId } from "./profileActions";
-import { get } from "http";
-import App from "next/app";
+import { createClient } from "./supabase/server";
+import { Tables } from "../types/supabase";
 
 export async function applyJob(jobId: number): Promise<ActionResult> {
   const user = await currentUser();
@@ -114,8 +111,26 @@ export async function getAppliedJobs(): Promise<GetJobsResult> {
   };
 }
 
-// 戻り値の指定
-export async function getApplications(jobId: number) {
+type ProfileRow = Pick<
+  Tables<"students">,
+  | "full_name"
+  | "university"
+  | "location"
+  | "bio"
+  | "email"
+  | "id"
+  | "created_at"
+>;
+type ApplicantWithProfile = Tables<"applications"> & {
+  student: ProfileRow | null;
+};
+type GetApplicationsResult =
+  | { success: true; data: ApplicantWithProfile[] }
+  | { success: false; message: string };
+
+export async function getApplications(
+  jobId: number
+): Promise<GetApplicationsResult> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("applications")
@@ -126,9 +141,10 @@ export async function getApplications(jobId: number) {
     location,
     bio,
     email  
-    )` //emailの後にカンマがついてるとエラーになるsupabase側が続きがあると思い
+    created_at,
+    id
+    )` //emailの後にカンマがついてるとエラーになるsupabase側が続きがあると思ってしまう
     )
-
     .eq("job_id", jobId)
     .order("created_at", { ascending: false });
 
@@ -142,7 +158,7 @@ export async function getApplications(jobId: number) {
 
   return {
     success: true,
-    data: data || [],
+    data: (data as ApplicantWithProfile[]) || [],
   };
 }
 
@@ -169,7 +185,7 @@ export async function updateApplicationStatus(
   };
 }
 
-export async function getMember(jobId: number) {
+export async function getMember(jobId: number): Promise<number> {
   const supabase = await createClient();
   const { count, error } = await supabase
     .from("applications")

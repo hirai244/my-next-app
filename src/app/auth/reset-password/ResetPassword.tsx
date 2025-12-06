@@ -1,5 +1,4 @@
 "use client";
-import { updatePasswordAction } from "@/lib/authActions";
 import { PasswordFormValues, passwordSchema } from "@/src/schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -9,7 +8,8 @@ import AuthCard from "../AuthCard";
 import { Form } from "../../../components/ui/form";
 import { FormField } from "../../../components/FormField";
 import { Button } from "../../../components/ui/button";
-import { Spinner } from "../../../components/ui/spinner";
+import { updatePasswordAction } from "@/src/lib/authActions";
+import { Loader2 } from "lucide-react";
 
 export function ResetPassword() {
   const router = useRouter();
@@ -22,26 +22,22 @@ export function ResetPassword() {
   });
 
   const onSubmit = async (data: PasswordFormValues) => {
-    try {
-      await updatePasswordAction(data);
-      toast.success("パスワードが正常に更新されました。", {
-        description: "新規パスワードでログインしてください。",
-      });
-
-      router.push("/auth/login");
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "パスワードの更新に失敗しました。";
+    const result = await updatePasswordAction(data);
+    if (!result.success) {
       toast.error("更新失敗", {
-        description: errorMessage,
+        description: result.message,
       });
-
       form.setError("root.serverError", {
         type: "manual",
-        message: errorMessage,
+        message: result.message,
       });
+      return;
+    }
+    toast.success("パスワードを更新しました。", {
+      description: "ログインしてください。",
+    });
+    if (result.redirectUrl) {
+      router.push(result.redirectUrl);
     }
   };
   return (
@@ -56,7 +52,7 @@ export function ResetPassword() {
             label="パスワード"
             form={form}
             type="password"
-            placeholder="extha"
+            placeholder="新しいパスワードを入力してください"
           />
           {form.formState.errors.root?.serverError && (
             <p className="text-sm text-red-500">
@@ -64,7 +60,13 @@ export function ResetPassword() {
             </p>
           )}
           <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? <Spinner /> : "送信"}
+            {form.formState.isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="animate-spin w-5 h-5" /> 登録中...
+              </span>
+            ) : (
+              "パスワードを更新する"
+            )}
           </Button>
         </form>
       </Form>

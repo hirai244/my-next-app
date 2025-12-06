@@ -3,18 +3,6 @@ type SectionProps = {
   children?: React.ReactNode;
   icon?: React.ReactNode;
 };
-
-// export function Section({ title, children }: SectionProps) {
-//   return (
-//     <div className="bg-white p-6 rounded-xl shadow-lg">
-//       <h2 className="text-xl font-semibold border-b pb-2 mb-4 text-gray-800">
-//         {title}
-//       </h2>
-//       {children}
-//     </div>
-//   );
-// }
-
 export function Section({ title, icon, children }: SectionProps) {
   return (
     <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 transition-shadow hover:shadow-md">

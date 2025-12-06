@@ -1,6 +1,4 @@
-import * as React from "react";
 import { ChevronDownIcon } from "lucide-react";
-
 import { Button } from "@/src/components/ui/button";
 import { Calendar } from "@/src/components/ui/calendar";
 import {
@@ -8,15 +6,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/ui/popover";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
+import { useState } from "react";
+
 type DatePickerProps = {
-  selected: Date | undefined; //mode=singleならDateオブジェクト rangeならDateRange
+  selected: Date | undefined;
   disabled: boolean;
   onChange: (date: Date | undefined) => void;
 };
 
 export function DatePicker({ selected, disabled, onChange }: DatePickerProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-3">
@@ -38,6 +38,7 @@ export function DatePicker({ selected, disabled, onChange }: DatePickerProps) {
             captionLayout="dropdown"
             onSelect={(date: Date | undefined) => {
               onChange(date);
+              setOpen(false);
             }}
           />
         </PopoverContent>

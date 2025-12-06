@@ -1,6 +1,4 @@
 "use client";
-
-import { sendResetEmailAction } from "@/lib/authActions";
 import { EmailFormValues, emailSchema } from "@/src/schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -10,7 +8,8 @@ import AuthCard from "../AuthCard";
 import { Form } from "../../../components/ui/form";
 import { FormField } from "../../../components/FormField";
 import { Button } from "../../../components/ui/button";
-import { Spinner } from "../../../components/ui/spinner";
+import { sendResetEmailAction } from "@/src/lib/authActions";
+import { Loader2 } from "lucide-react";
 
 export function ForgetPassword() {
   const Router = useRouter();
@@ -28,7 +27,6 @@ export function ForgetPassword() {
       toast.error(result.message, {
         description: "入力内容をご確認ください。",
       });
-      //サーバー側のエラー
       form.setError("root.serverError", {
         type: "manual",
         message: result.message,
@@ -37,6 +35,7 @@ export function ForgetPassword() {
     }
     toast.success("リセットメールを送信しました。", {
       description: "メールボックスをご確認ください。",
+      duration: 5000,
     });
     form.reset();
 
@@ -66,7 +65,13 @@ export function ForgetPassword() {
             className="w-full mt-4"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? <Spinner /> : "送信"}
+            {form.formState.isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="animate-spin w-5 h-5" /> 送信中...
+              </span>
+            ) : (
+              "送信"
+            )}
           </Button>
         </form>
       </Form>

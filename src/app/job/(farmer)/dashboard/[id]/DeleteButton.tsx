@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/src/components/ui/alert-dialog";
 import { Button } from "@/src/components/ui/button";
-import { deleteJob } from "@/lib/jobActions";
+import { deleteJob } from "@/src/lib/jobActions";
 import { Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useTransition } from "react";
@@ -31,7 +31,6 @@ export default function DeleteButton({
   const handleDelete = async () => {
     startTransition(async () => {
       const result = await deleteJob(jobId);
-
       if (result.success) {
         toast.success(result.message);
 

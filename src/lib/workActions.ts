@@ -1,7 +1,7 @@
 "use server";
-import { createClient } from "@/utils/supabase/server";
+import { GetJobsResult } from "../types/shared";
 import { currentUser } from "./currentUser";
-import { GetJobsResult } from "@/src/schema/job";
+import { createClient } from "./supabase/server";
 
 export async function getMyWorks(): Promise<GetJobsResult> {
   const user = await currentUser();

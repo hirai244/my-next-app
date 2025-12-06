@@ -1,7 +1,6 @@
-import * as React from "react";
+"use client";
 import { ChevronDownIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
-
 import { Button } from "@/src/components/ui/button";
 import { Calendar } from "@/src/components/ui/calendar";
 import {
@@ -10,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/src/components/ui/popover";
 import { format } from "date-fns";
+import { useMemo, useState } from "react";
 
 type DateRangePickerProps = {
   selected: DateRange | undefined;
@@ -26,14 +26,8 @@ export function DateRangePicker({
   defaultMonth,
   className,
 }: DateRangePickerProps) {
-  const [open, setOpen] = React.useState(false);
-  // const handleSelect = (date: DateRange | undefined) => {
-  //   onChange(date);
-  //   if (date && date.from && date.to) {
-  //     setOpen(false);
-  //   }
-  // };
-  const buttonText = React.useMemo(() => {
+  const [open, setOpen] = useState(false);
+  const buttonText = useMemo(() => {
     if (!selected?.from) {
       return "期間を選択してください";
     }
@@ -56,7 +50,7 @@ export function DateRangePicker({
             className="w-48 justify-between font-normal"
           >
             {buttonText}
-            <ChevronDownIcon />
+            <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
@@ -65,6 +59,9 @@ export function DateRangePicker({
             defaultMonth={defaultMonth}
             onSelect={(date: DateRange | undefined) => {
               onChange(date);
+              if (date?.from && date?.to) {
+                setOpen(false);
+              }
             }}
             selected={selected}
             numberOfMonths={1}

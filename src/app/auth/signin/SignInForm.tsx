@@ -2,32 +2,28 @@
 import AuthCard from "../AuthCard";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import {
-  AuthFormValues,
-  authSchema,
-  LoginFormValues,
-  loginSchema,
-} from "@/src/schema/auth";
+import { SignInFormValues, signinSchema } from "@/src/schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signInAction } from "@/lib/authActions";
 import { FormField } from "../../../components/FormField";
 import { Button } from "@/src/components/ui/button";
 import { Form } from "@/src/components/ui/form";
 import { toast } from "sonner";
-import { Spinner } from "../../../components/ui/spinner";
+import { signInAction } from "@/src/lib/authActions";
+import { Loader2 } from "lucide-react";
+import { Sign } from "crypto";
 
 export function SignInForm() {
   const router = useRouter();
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignInFormValues>({
+    resolver: zodResolver(signinSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const OnSubmit = async (data: LoginFormValues) => {
+  const OnSubmit = async (data: SignInFormValues) => {
     const result = await signInAction(data);
 
     if (!result.success) {
@@ -40,18 +36,15 @@ export function SignInForm() {
       });
       return;
     }
-    toast.success("ログイン成功", {
-      duration: 5000,
+
+    toast.success(result.message, {
+      duration: 4000,
     });
-
     router.refresh();
-    router.push("/"); //認証後のページ
+    if (result.redirectUrl) {
+      router.push(result.redirectUrl);
+    }
   };
-  // const onInvalid = (errors: any) => {
-  //   console.log("バリデーションエラーが発生しています:", errors);
-  //   toast.error("入力内容に不備があります");
-  // };
-
   return (
     <AuthCard
       title="ログイン"
@@ -74,6 +67,7 @@ export function SignInForm() {
             type="password"
             placeholder="••••••••"
             autoComplete="current-password"
+            description="8文字以上で大文字を含む半角英数字と記号を含めてください。"
           />
 
           {form.formState.errors.root?.serverError && (
@@ -92,7 +86,13 @@ export function SignInForm() {
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? <Spinner /> : "ログイン"}
+            {form.formState.isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="animate-spin w-5 h-5" /> ログイン中...
+              </span>
+            ) : (
+              "ログイン"
+            )}
           </Button>
           <div className="mt-4 text-center text-sm">
             アカウントをお持ちではありませんか？{" "}

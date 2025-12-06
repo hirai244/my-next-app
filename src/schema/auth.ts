@@ -9,8 +9,7 @@ const passwordOptions = {
   minSymbols: 1,
   pointsForContaining: 0,
 };
-
-export const authSchema = z.object({
+export const signupSchema = z.object({
   email: z
     .string()
     .email({ message: "有効なメールアドレスを入力してください。" }),
@@ -27,9 +26,9 @@ export const authSchema = z.object({
     required_error: "登録タイプを選択してください。",
   }),
 });
-export type AuthFormValues = z.infer<typeof authSchema>;
+export type SignUpFormValues = z.infer<typeof signupSchema>;
 
-export const loginSchema = z.object({
+export const signinSchema = z.object({
   email: z
     .string()
     .email({ message: "有効なメールアドレスを入力してください。" }),
@@ -43,10 +42,9 @@ export const loginSchema = z.object({
     }
   }),
 });
-export type LoginFormValues = z.infer<typeof loginSchema>;
+export type SignInFormValues = z.infer<typeof signinSchema>;
 
-//…メールアドレス
-
+//メールアドレス
 export const emailSchema = z.object({
   email: z.string().email({
     message: "有効なメールアドレスを入力してください。",

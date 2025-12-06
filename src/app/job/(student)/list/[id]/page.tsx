@@ -1,14 +1,13 @@
 "use server";
 import { Section } from "@/src/components/Section";
-import { getApplicationResult, getMember } from "@/lib/applicationActions";
-import { getJob } from "@/lib/jobActions";
 import { Calendar1, Clock, MapPin, Users } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
-import { ApplyButton } from "../ApplyButton";
-import { currentUser } from "@/lib/currentUser";
-import DeleteButton from "../../work/DeleteButton";
+import { ApplyButton } from "./ApplyButton";
+import { getJob } from "@/src/lib/jobActions";
+import { getApplicationResult, getMember } from "@/src/lib/applicationActions";
+import { currentUser } from "@/src/lib/currentUser";
 
 type ParamsProps = {
   params: Promise<{ id: string }>;
@@ -17,17 +16,15 @@ export default async function page({ params }: ParamsProps) {
   const { id } = await params;
   const jobId = Number(id);
   if (isNaN(jobId)) notFound();
-
+  const user = await currentUser();
   const result = await getJob(jobId);
   if (!result.success) {
     notFound();
   }
   const job = result.data;
 
-  const member = await getMember(jobId);
-
+  const nowMember = await getMember(jobId);
   const appResult = await getApplicationResult(jobId);
-
   const currentStatus = appResult.success ? appResult.status : null;
 
   return (
@@ -75,7 +72,7 @@ export default async function page({ params }: ParamsProps) {
           <div className="flex items-center space-x-2">
             <Users className="w-4 h-4 text-green-600 shrink-0" />
             <span>
-              {member}/{job.member}
+              {nowMember}/{job.member}
             </span>
           </div>
         </div>
@@ -103,14 +100,15 @@ export default async function page({ params }: ParamsProps) {
           </Section>
         )}
       </div>
-      {/* レイアウトを考える */}
-      <div className="max-w-4xl mx-auto">
-        <DeleteButton jobId={job.id} isDetailView={true} />
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 safe-area-bottom shadow-lg">
         <div className="max-w-4xl mx-auto">
-          <ApplyButton jobId={jobId} currentStatus={currentStatus} />
+          {!user ? (
+            <p className="text-center text-sm text-gray-500">
+              応募するにはログインが必要です
+            </p>
+          ) : (
+            <ApplyButton jobId={jobId} currentStatus={currentStatus} />
+          )}
         </div>
       </div>
     </div>

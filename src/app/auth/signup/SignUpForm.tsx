@@ -4,21 +4,22 @@ import AuthCard from "../AuthCard";
 import { Controller, useForm } from "react-hook-form";
 import { FormField } from "../../../components/FormField";
 import { useRouter } from "next/navigation";
-import { AuthFormValues, authSchema } from "@/src/schema/auth";
 import { Form } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/src/components/ui/button";
-import { signup } from "@/lib/authActions";
 import { toast } from "sonner";
 import { Spinner } from "../../../components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
+import { signup } from "@/src/lib/authActions";
+import { SignUpFormValues, signupSchema } from "@/src/schema/auth";
+import { Loader2 } from "lucide-react";
 
 export function SignUpForm() {
   const router = useRouter();
 
-  const form = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
+  const form = useForm<SignUpFormValues>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -28,9 +29,7 @@ export function SignUpForm() {
 
   const currentRole = form.watch("role");
 
-  console.log("エラー:", form.formState.errors);
-  console.log("RHFデータ:", form.getValues());
-  const onSubmit = async (data: AuthFormValues) => {
+  const onSubmit = async (data: SignUpFormValues) => {
     console.log("送信でーだ", data);
     const result = await signup(data);
 
@@ -48,13 +47,16 @@ export function SignUpForm() {
       description: "確認メールを送信しました。",
       duration: 5000,
     });
-    router.push("/auth/confirm-email");
+    router.refresh();
+    if (result.redirectUrl) {
+      router.push(result.redirectUrl);
+    }
   };
 
   return (
     <AuthCard
       title="新規アカウント作成"
-      description="登録タイプを選択し、メールアドレスと6文字以上のパスワードを入力してください"
+      description="登録タイプを選択し、メールアドレスとパスワードを入力してください"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -129,7 +131,13 @@ export function SignUpForm() {
             )}
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? <Spinner /> : "アカウント作成"}
+            {form.formState.isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="animate-spin w-5 h-5" /> 作成中...
+              </span>
+            ) : (
+              "アカウント作成"
+            )}
           </Button>
           <div className="mt-4 text-center text-sm">
             アカウントをお持ちですか？{" "}

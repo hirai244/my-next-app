@@ -1,6 +1,7 @@
-import { getMyWorks } from "@/lib/workActions";
 import { notFound, redirect } from "next/navigation";
 import JobCard from "../list/JobCard";
+import { getMyWorks } from "@/src/lib/workActions";
+
 export async function WorksList() {
   const result = await getMyWorks();
   if (!result.success) {

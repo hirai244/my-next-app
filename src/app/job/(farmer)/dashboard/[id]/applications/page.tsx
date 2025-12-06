@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ApplicantCard, Application } from "./ApplicantCard";
-import { getMyJob } from "@/lib/jobActions";
-import { getApplications } from "@/lib/applicationActions";
+import { getMyJob } from "@/src/lib/jobActions";
+import { getApplications } from "@/src/lib/applicationActions";
+import { currentUser } from "@/src/lib/currentUser";
 
 type ParamsProps = {
   params: Promise<{ id: string }>;
@@ -10,6 +11,13 @@ export default async function page({ params }: ParamsProps) {
   const { id } = await params;
   const jobId = Number(id);
   if (isNaN(jobId)) notFound();
+  const user = await currentUser();
+  if (!user) {
+    redirect("/login");
+  }
+  if (user.role !== "farmer") {
+    notFound();
+  }
   const [jobRes, appsRes] = await Promise.all([
     getMyJob(jobId),
     getApplications(jobId),
@@ -17,6 +25,12 @@ export default async function page({ params }: ParamsProps) {
   if (!jobRes.success || !jobRes.data) return notFound();
 
   const job = jobRes.data;
+  if (!appsRes.success) {
+    return {
+      supers: false,
+      message: appsRes.message,
+    };
+  }
   const applications = appsRes.data || [];
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -32,7 +46,7 @@ export default async function page({ params }: ParamsProps) {
             <p>まだ応募はありません。</p>
           </div>
         ) : (
-          applications.map((app: Application) => (
+          applications.map((app) => (
             <ApplicantCard key={app.id} application={app} />
           ))
         )}
@@ -40,5 +54,3 @@ export default async function page({ params }: ParamsProps) {
     </div>
   );
 }
-// app/job/farmer/dashboard/[id]/applications/page.tsx
-// components/job/ApplicantCard.tsx

@@ -1,15 +1,22 @@
-import AnimatePageWrapper from "@/src/components/motion/AnimatePageWrapper";
 import React from "react";
 import { SignUpForm } from "./SignUpForm";
+import { currentUser } from "@/src/lib/currentUser";
+import { redirect } from "next/navigation";
 
-const page = () => {
+export default async function page() {
+  const user = await currentUser();
+
+  if (user) {
+    const role = user.user_metadata.role;
+    if (role === "farmer") {
+      redirect("/job/dashboard");
+    } else {
+      redirect("/job/list");
+    }
+  }
   return (
     <div>
-      <AnimatePageWrapper>
-        <SignUpForm />
-      </AnimatePageWrapper>
+      <SignUpForm />
     </div>
   );
-};
-
-export default page;
+}

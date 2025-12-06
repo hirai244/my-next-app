@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
-import { signOutAction } from "@/lib/authActions";
-import { currentUser } from "@/lib/currentUser";
+import { currentUser } from "../lib/currentUser";
+import { signOutAction } from "../lib/authActions";
 
 export async function Header() {
   const user = await currentUser();

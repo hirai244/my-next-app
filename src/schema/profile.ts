@@ -1,6 +1,5 @@
 import { PREFECTURE_NAMES } from "@/src/constants/prefectures";
 import { z } from "zod";
-import { emailSchema } from "./auth";
 // 農
 export const farmerSchema = z.object({
   farmName: z.string().min(1, "農園名は必須です。"),

@@ -1,10 +1,8 @@
 "use client";
-
 import { FormField } from "@/src/components/FormField";
 import { Button } from "@/src/components/ui/button";
 import { Form } from "@/src/components/ui/form";
-import { Spinner } from "@/src/components/ui/spinner";
-import { createProfile } from "@/lib/profileActions";
+import { createProfile } from "@/src/lib/profileActions";
 import { FarmerFormValues, farmerSchema } from "@/src/schema/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileText, Loader2, Mail, MapPin, School, User } from "lucide-react";
@@ -49,7 +47,6 @@ export function FarmerForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 space-y-6">
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <User className="w-4 h-4" /> 農園名または氏名
@@ -62,8 +59,6 @@ export function FarmerForm() {
                 placeholder="農園名または氏名を記入してください。"
               />
             </div>
-            {/* </div> */}
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
