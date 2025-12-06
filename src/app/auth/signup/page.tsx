@@ -7,7 +7,7 @@ export default async function page() {
   const user = await currentUser();
 
   if (user) {
-    const role = user.user_metadata.role;
+    const role = user.role;
     if (role === "farmer") {
       redirect("/job/dashboard");
     } else {
