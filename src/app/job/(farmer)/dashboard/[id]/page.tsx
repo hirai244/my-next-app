@@ -28,10 +28,12 @@ export default async function Page({ params }: ParamsProps) {
 
   const result = await getMyJob(jobId);
   if (!result.success) {
-    return {
-      success: false,
-      message: result.message,
-    };
+    return (
+      //  後で修正
+      <div className="p-10 text-center text-red-600">
+        <p>データの取得に失敗しました。</p>
+      </div>
+    );
   }
   const job = result.data;
 
