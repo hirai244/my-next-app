@@ -17,23 +17,23 @@ export async function Header() {
         {role === "student" && (
           <>
             <Button asChild variant="ghost">
-              <Link href="/job/student/list">募集一覧</Link>
+              <Link href="/job/list">募集一覧</Link>
             </Button>
             <Button asChild variant="ghost">
-              <Link href="/job/student/favorite">お気に入り</Link>
+              <Link href="/job/favorite">お気に入り</Link>
             </Button>
             <Button asChild variant="ghost">
-              <Link href="/job/student/work">働く</Link>
+              <Link href="/job/work">働く</Link>
             </Button>
           </>
         )}
         {role === "farmer" && (
           <>
             <Button asChild variant="ghost">
-              <Link href="/job/farmer/create">募集作成</Link>
+              <Link href="/job/create">募集作成</Link>
             </Button>
             <Button asChild variant="ghost">
-              <Link href="/job/farmer/dashboard">募集管理</Link>
+              <Link href="/job/dashboard">募集管理</Link>
             </Button>
           </>
         )}

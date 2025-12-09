@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/ui/popover";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { useState } from "react";
 
 type DatePickerProps = {

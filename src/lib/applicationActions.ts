@@ -52,7 +52,7 @@ export async function applyJob(jobId: number): Promise<ActionResult> {
       message: "応募の登録中にエラーが発生しました。",
     };
   }
-  revalidatePath(`/job/student/dashboard/${jobId}`);
+  revalidatePath(`/job/list/${jobId}`);
 
   return { success: true, message: "応募が完了しました。" };
 }
@@ -178,7 +178,7 @@ export async function updateApplicationStatus(
       message: "更新中にデータベースエラーが発生しました",
     };
   }
-  revalidatePath("/job/student/dashboard");
+  revalidatePath("/job/dashboard");
   return {
     success: true,
     message: "更新成功",

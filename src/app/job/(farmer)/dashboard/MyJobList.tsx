@@ -13,11 +13,7 @@ export async function MyJobsList() {
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {result.data.map((job) => (
-          <MyJobCard
-            key={job.id}
-            job={job}
-            href={`/job/farmer/dashboard/${job.id}`}
-          />
+          <MyJobCard key={job.id} job={job} href={`/job/dashboard/${job.id}`} />
         ))}
       </div>
 

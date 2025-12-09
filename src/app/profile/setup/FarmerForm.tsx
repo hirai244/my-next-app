@@ -5,7 +5,7 @@ import { Form } from "@/src/components/ui/form";
 import { createProfile } from "@/src/lib/profileActions";
 import { FarmerFormValues, farmerSchema } from "@/src/schema/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileText, Loader2, Mail, MapPin, School, User } from "lucide-react";
+import { FileText, Loader2, Mail, MapPin, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 

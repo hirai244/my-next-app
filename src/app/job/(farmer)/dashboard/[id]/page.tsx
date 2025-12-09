@@ -115,7 +115,7 @@ export default async function Page({ params }: ParamsProps) {
       <div className="fixed bottom-0 ...">
         <div className="max-w-4xl mx-auto flex gap-4 items-center">
           <Link
-            href={`/job/farmer/dashboard/${job.id}/applications`}
+            href={`/job/dashboard/${job.id}/applications`}
             className="flex-1"
           >
             <Button className="w-full py-6 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg">

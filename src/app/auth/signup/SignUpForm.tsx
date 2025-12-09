@@ -8,12 +8,11 @@ import { Form } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/src/components/ui/button";
 import { toast } from "sonner";
-import { Spinner } from "../../../components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
 import { cn } from "@/src/lib/utils";
 import { signup } from "@/src/lib/authActions";
 import { SignUpFormValues, signupSchema } from "@/src/schema/auth";
-import { Loader2 } from "lucide-react";
+import { GraduationCap, Loader2, Tractor } from "lucide-react";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -70,30 +69,32 @@ export function SignUpForm() {
                   onValueChange={(value) =>
                     field.onChange(value as "student" | "farmer")
                   }
-                  className="grid w-full grid-cols-2 bg-muted p-1"
+                  className="w-full "
                 >
-                  <TabsList>
+                  <TabsList className="grid w-full grid-cols-2 h-14 p-1 bg-gray-100/80 rounded-xl">
                     <TabsTrigger
                       value="student"
                       className={cn(
                         "transition-all duration-200",
                         field.value === "student"
-                          ? "bg-green-600 text-white shadow-sm hover:bg-green-700"
+                          ? "bg-green-600  shadow-sm "
                           : "hover:bg-accent"
                       )}
                     >
-                      学生として登録
+                      <GraduationCap className="w-5 h-5" />
+                      学生
                     </TabsTrigger>
                     <TabsTrigger
                       value="farmer"
                       className={cn(
-                        "transition-all duration-200",
+                        "transition-all duration-200 ",
                         field.value === "farmer"
-                          ? "bg-amber-600 text-white shadow-sm hover:bg-amber-700"
+                          ? "bg-amber-600  shadow-sm hover:bg-amber-700"
                           : "hover:bg-accent"
                       )}
                     >
-                      農家として登録
+                      <Tractor className="w-5 h-5" />
+                      農家
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
