@@ -1,0 +1,80 @@
+"use client";
+import { EmailFormValues, emailSchema } from "@/src/schema/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import AuthCard from "../AuthCard";
+import { Form } from "../../../components/ui/form";
+import { FormField } from "../../../components/FormField";
+import { Button } from "../../../components/ui/button";
+import { sendResetEmailAction } from "@/src/lib/authActions";
+import { Loader2 } from "lucide-react";
+
+export function ForgetPassword() {
+  const Router = useRouter();
+
+  const form = useForm<EmailFormValues>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const onSubmit = async (data: EmailFormValues) => {
+    const result = await sendResetEmailAction(data);
+    if (!result.success) {
+      toast.error(result.message, {
+        description: "入力内容をご確認ください。",
+      });
+      form.setError("root.serverError", {
+        type: "manual",
+        message: result.message,
+      });
+      return;
+    }
+    toast.success("リセットメールを送信しました。", {
+      description: "メールボックスをご確認ください。",
+      duration: 5000,
+    });
+    form.reset();
+
+    Router.push("/auth/confirm-reset-email");
+  };
+  return (
+    <AuthCard title="再設定" description="メールアドレスを入力してください。">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            form={form}
+            name="email"
+            label="メールアドレス"
+            type="email"
+            placeholder="example@mail.com"
+            autoComplete="email"
+          />
+          {form.formState.errors.root?.serverError && (
+            <div className="mt-2 p-3 bg-red-100 border border-red-400 rounded-md">
+              <p className="text-sm text-red-600">
+                {form.formState.errors.root.serverError.message}
+              </p>
+            </div>
+          )}
+          <Button
+            type="submit"
+            className="w-full mt-4"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="animate-spin w-5 h-5" /> 送信中...
+              </span>
+            ) : (
+              "送信"
+            )}
+          </Button>
+        </form>
+      </Form>
+    </AuthCard>
+  );
+}
