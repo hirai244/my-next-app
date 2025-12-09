@@ -67,9 +67,9 @@ export async function createProfile(formData: FormData): Promise<ActionResult> {
   }
 
   if (role === "student") {
-    redirect("/job/student/list");
+    redirect("/job/list");
   } else {
-    redirect("/job/farmer/dashboard");
+    redirect("/job/dashboard");
   }
 }
 

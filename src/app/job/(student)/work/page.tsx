@@ -8,7 +8,7 @@ export default async function page() {
     return redirect("/login");
   }
   if (user.role !== "student") {
-    return redirect("/job/farmer/dashboard");
+    return redirect("/job/dashboard");
   }
   return (
     <div>

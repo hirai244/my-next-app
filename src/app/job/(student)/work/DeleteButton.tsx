@@ -34,7 +34,7 @@ export default function DeleteButton({
       if (result.success) {
         toast.success(result.message);
         if (isDetailView) {
-          router.push("/job/farmer/dashboard");
+          router.push("/job/dashboard");
         }
       }
     });
@@ -57,7 +57,7 @@ export default function DeleteButton({
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>キャンセル</AlertDialogCancel>
           <AlertDialogAction
-            onClick={(e) => {
+            onClick={() => {
               handleDelete();
             }}
             className="bg-red-600 hover:bg-red-700 text-white"

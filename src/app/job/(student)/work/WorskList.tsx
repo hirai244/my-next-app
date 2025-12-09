@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import JobCard from "../list/JobCard";
 import { getMyWorks } from "@/src/lib/workActions";
 
@@ -11,11 +11,7 @@ export async function WorksList() {
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {result.data.map((job) => (
-          <JobCard
-            key={job.id}
-            job={job}
-            href={`/job/student/list/${job.id}`}
-          />
+          <JobCard key={job.id} job={job} href={`/job/list/${job.id}`} />
         ))}
       </div>
 

@@ -123,8 +123,8 @@ export async function createJob(formData: FormData): Promise<ActionResult> {
       message: insertError.message || "募集の作成に失敗しました。",
     };
   }
-  revalidatePath("/job/farmer/dashboard");
-  redirect("/job/farmer/dashboard");
+  revalidatePath("/job/dashboard");
+  redirect("/job/dashboard");
 }
 
 export async function deleteJob(jobId: number): Promise<ActionResult> {
@@ -147,7 +147,7 @@ export async function deleteJob(jobId: number): Promise<ActionResult> {
     console.error("削除エラー:", error);
     return { success: false, message: "消去に失敗しました。" };
   }
-  revalidatePath("/job/farmer/dashboard");
+  revalidatePath("/job/dashboard");
 
   return { success: true, message: "削除しました。" };
 }
@@ -271,6 +271,9 @@ export async function getJobs(): Promise<GetJobsWithAppliedResult> {
       success: false,
       message: "取得中にデータベースエラーが発生しました",
     };
+  }
+  if (!jobs) {
+    return { success: true, data: [] };
   }
   let appliedJobIds: number[] = [];
   if (user) {
