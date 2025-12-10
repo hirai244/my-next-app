@@ -12,6 +12,9 @@ export async function GET(request: Request) {
 
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`);
+    } else {
+      console.error("Auth code exchange failed:", error.message);
+      console.error("Error details:", error.code);
     }
   }
   return NextResponse.redirect(`${origin}/auth/auth-code-error`);
