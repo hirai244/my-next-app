@@ -29,8 +29,8 @@ export default async function page({ params }: ParamsProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
-      <div className="max-w-4xl mx-auto">
-        <div className="relative aspect-video w-full mb-6 rounded-xl overflow-hidden shadow-inner bg-gray-100">
+      <div className="max-w-4xl mx-auto px-6 pt-6">
+        <div className="relative aspect-video w-full mb-6 rounded-2xl overflow-hidden bg-gray-100 border border-gray-300">
           {job.photo_url ? (
             <Image
               src={job.photo_url}
@@ -41,41 +41,46 @@ export default async function page({ params }: ParamsProps) {
               priority
             />
           ) : (
-            <div className="bg-gray-200 flex items-center justify-center">
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-gray-100">
               画像
             </div>
           )}
         </div>
-
-        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 leading-tight">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 leading-tight ">
           {job.title}
         </h1>
-        <div className="text-2xl font-bold  mb-4">{job.email}</div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
-          <div className="flex items-center space-x-2">
-            <Calendar1 className="w-4 h-4 text-green-600 shrink-0" />
-            <span>{job.date}</span>
+      </div>
+      <div className="max-w-4xl mx-auto px-6 pt-6 ">
+        <Section title="📋 基本情報">
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 text-sm text-gray-700 ">
+            <div className="flex items-center space-x-2">
+              <Calendar1 className="w-4 h-4 text-green-600 shrink-0" />
+              <span>{job.date}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Clock className="w-4 h-4 text-green-600 shrink-0" />
+              <span>
+                {job.start} - {job.end}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <MapPin className="w-4 h-4 text-green-600 shrink-0" />
+              <span>
+                {job.prefecture} {job.city}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Users className="w-4 h-4 text-green-600 shrink-0" />
+              <span>
+                {nowMember}/{job.member}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Users className="w-4 h-4 text-green-600 shrink-0" />
+              <span>{job.email}</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-green-600 shrink-0" />
-            <span>
-              {job.start} - {job.end}
-            </span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <MapPin className="w-4 h-4 text-green-600 shrink-0" />
-            <span>
-              {job.prefecture} {job.city}
-            </span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Users className="w-4 h-4 text-green-600 shrink-0" />
-            <span>
-              {nowMember}/{job.member}
-            </span>
-          </div>
-        </div>
+        </Section>
       </div>
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
         <Section title="✅ お仕事の内容">

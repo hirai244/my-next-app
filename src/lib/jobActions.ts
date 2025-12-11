@@ -262,7 +262,8 @@ export async function getJobs(): Promise<GetJobsWithAppliedResult> {
   const { data: jobs, error: jobsError } = await supabase
     .from("jobs")
     .select()
-    .order("range_end", { ascending: true });
+    .order("range_end", { ascending: true })
+    .limit(100);
 
   console.log(jobs, jobsError);
 

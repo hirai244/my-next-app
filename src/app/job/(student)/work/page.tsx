@@ -1,6 +1,8 @@
 import { currentUser } from "@/src/lib/currentUser";
 import { WorksList } from "./WorskList";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { SkeletonJobList } from "../../components/SkeletonJobList";
 
 export default async function page() {
   const user = await currentUser();
@@ -12,7 +14,9 @@ export default async function page() {
   }
   return (
     <div>
-      <WorksList />
+      <Suspense fallback={<SkeletonJobList />}>
+        <WorksList />
+      </Suspense>
     </div>
   );
 }

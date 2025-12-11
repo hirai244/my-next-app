@@ -18,7 +18,7 @@ export default function AuthCard({
   children,
 }: AuthCardProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center p-24">
+    <div className="flex min-h-screen flex-col items-center p-24 ">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
