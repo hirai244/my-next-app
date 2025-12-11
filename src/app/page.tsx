@@ -25,7 +25,7 @@ export default function LandingPage() {
               現場の経験を積もう。
             </p>
             <Link href="/job/list" className="w-full">
-              <Button className="w-full bg-green-600 hover:bg-green-700 text-lg py-6">
+              <Button className="w-full bg-green-600 hover:bg-green-700 text-lg py-6 hover:scale-105 transition-transform duration-500 opacity-100">
                 仕事を探す
               </Button>
             </Link>
@@ -37,7 +37,7 @@ export default function LandingPage() {
               意欲ある農学生に手伝ってもらおう。
             </p>
             <Link href="/job/dashboard" className="w-full">
-              <Button className="w-full bg-amber-600 hover:bg-amber-700 text-lg py-6">
+              <Button className="w-full bg-amber-600 hover:bg-amber-700 text-lg py-6 hover:scale-105 transition-transform duration-500 opacity-100">
                 学生を募集する
               </Button>
             </Link>

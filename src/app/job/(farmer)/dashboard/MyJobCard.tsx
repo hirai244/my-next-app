@@ -22,18 +22,15 @@ export function MyJobCard({ job, href }: MyJobCardProps) {
     : "日時未定";
 
   return (
-    <Card className="relative overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border-none group h-full flex flex-col p-0">
-      <div className="absolute top-2 right-2 z-20">
-        <DeleteButton jobId={job.id} />
-      </div>
+    <Card className="flex flex-col relative overflow-hidden hover:shadow-xl hover:translate-y-1 transition-all duration-300 border-none group h-hull p-0">
       <Link href={href} className="flex flex-col h-full">
-        <div className="relative aspect-video bg-gray-100 overflow-hidden">
+        <div className="relative aspect-video bg-gray-100 overflow-hidden border-none w-hull p-0">
           {job.photo_url ? (
             <Image
               src={job.photo_url}
               alt={job.title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
@@ -44,8 +41,8 @@ export function MyJobCard({ job, href }: MyJobCardProps) {
           )}
         </div>
 
-        <CardContent className="p-5 flex-1 flex flex-col space-y-3">
-          <h2 className="text-lg font-bold text-gray-800 line-clamp-2 ">
+        <CardContent className="flex flex-1 flex-col p-4 justify-between space-y-4">
+          <h2 className="line-clamp-2 text-lg font-bold text-gray-800 line-clamp-2 ">
             {job.title}
           </h2>
 

@@ -1,6 +1,8 @@
 import { currentUser } from "@/src/lib/currentUser";
 import { MyJobsList } from "./MyJobList";
 import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
+import { SkeletonJobList } from "../../components/SkeletonJobList";
 
 export default async function page() {
   const user = await currentUser();
@@ -8,11 +10,13 @@ export default async function page() {
     redirect("/login");
   }
   if (user.role !== "farmer") {
-    notFound();
+    notFound(); //きちんとエラーを伝える
   }
   return (
     <div>
-      <MyJobsList />
+      <Suspense fallback={<SkeletonJobList />}>
+        <MyJobsList />
+      </Suspense>
     </div>
   );
 }

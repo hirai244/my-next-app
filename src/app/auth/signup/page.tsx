@@ -1,7 +1,8 @@
-import React from "react";
+import { Suspense } from "react";
 import { SignUpForm } from "./SignUpForm";
 import { currentUser } from "@/src/lib/currentUser";
 import { redirect } from "next/navigation";
+import { Skeleton } from "@/src/components/ui/skeleton";
 
 export default async function page() {
   const user = await currentUser();
@@ -16,7 +17,9 @@ export default async function page() {
   }
   return (
     <div>
-      <SignUpForm />
+      <Suspense fallback={<Skeleton className="size-full" />}>
+        <SignUpForm />
+      </Suspense>
     </div>
   );
 }

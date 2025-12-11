@@ -10,9 +10,14 @@ import DeleteButton from "../../work/DeleteButton";
 type ApplyButtonProps = {
   jobId: number;
   currentStatus: ApplicationStatus;
+  className?: string;
 };
 
-export function ApplyButton({ jobId, currentStatus }: ApplyButtonProps) {
+export function ApplyButton({
+  jobId,
+  currentStatus,
+  className,
+}: ApplyButtonProps) {
   const [isPending, startTransition] = useTransition();
 
   if (currentStatus === "accepted") {
@@ -65,7 +70,7 @@ export function ApplyButton({ jobId, currentStatus }: ApplyButtonProps) {
     <Button
       onClick={handleApply}
       disabled={isPending}
-      className="bg-green-600 hover:bg-green-700"
+      className="w-full py-6 bg-green-600 text-white border hover:scale-103 transition-transform duration-500 opacity-100 cursor-default"
     >
       {isPending ? (
         <>
