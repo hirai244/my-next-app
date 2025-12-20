@@ -7,33 +7,38 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { User, School, MapPin, Mail, FileText, Loader2 } from "lucide-react";
-import { createProfile } from "@/src/lib/profileActions";
-export function StudentForm() {
+import { editProfile } from "@/src/lib/profileActions";
+import { useRouter } from "next/navigation";
+
+type StudentFormProps = {
+  initialData: StudentFormValues;
+};
+export function StudentForm({ initialData }: StudentFormProps) {
+  const router = useRouter();
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
-      fullName: "",
-      university: "",
-      bio: "",
-      location: "",
-      email: "",
+      fullName: initialData.fullName || "",
+      university: initialData.university || "",
+      bio: initialData.bio || "",
+      location: initialData.location || "",
+      email: initialData.email || "",
     },
   });
 
   const onSubmit = async (data: StudentFormValues) => {
-    const formData = new FormData();
-    formData.append("fullName", data.fullName);
-    formData.append("university", data.university);
-    formData.append("bio", data.bio || "");
-    formData.append("location", data.location);
-    formData.append("email", data.email);
-    const result = await createProfile(formData);
+    const result = await editProfile(data);
 
     if (!result.success) {
       toast.error(result.message);
       return;
     }
     toast.success("登録完了");
+    if (result.redirectUrl) {
+      console.log(result.redirectUrl);
+      router.refresh();
+      router.push(result.redirectUrl);
+    }
   };
 
   return (

@@ -1,11 +1,15 @@
 "use server";
 import { cache } from "react";
 import { createClient } from "./supabase/server";
-type safeUser = {
+export type SafeUser = {
   role: "farmer" | "student" | null;
   id: string;
 };
-export const currentUser = cache(async (): Promise<safeUser | null> => {
+
+type UserMetadata = {
+  role?: "farmer" | "student";
+};
+export const currentUser = cache(async (): Promise<SafeUser | null> => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -13,10 +17,10 @@ export const currentUser = cache(async (): Promise<safeUser | null> => {
   if (!user) {
     return null;
   }
-  const role = user.user_metadata?.role;
-  const safeRole = role === "farmer" || role === "student" ? role : null;
+  const metadata = user.user_metadata as UserMetadata;
+  const role = metadata.role;
   return {
-    role: safeRole,
+    role: role || null,
     id: user.id,
   };
 });
