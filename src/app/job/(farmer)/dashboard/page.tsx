@@ -10,7 +10,7 @@ export default async function page() {
     redirect("/login");
   }
   if (user.role !== "farmer") {
-    notFound(); //きちんとエラーを伝える
+    notFound();
   }
   return (
     <div>

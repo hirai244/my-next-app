@@ -9,8 +9,10 @@ export default async function Page() {
   if (!user) {
     return redirect("/auth/signin");
   }
-
   const role = user.role;
+  if (role !== "student" && role !== "farmer") {
+    return redirect("/auth/signin");
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-50 px-4 py-12">

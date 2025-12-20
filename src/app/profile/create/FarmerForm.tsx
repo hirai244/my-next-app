@@ -8,8 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FileText, Loader2, Mail, MapPin, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function FarmerForm() {
+  const router = useRouter();
   const form = useForm<FarmerFormValues>({
     resolver: zodResolver(farmerSchema),
     defaultValues: {
@@ -20,18 +22,16 @@ export function FarmerForm() {
     },
   });
   const onSubmit = async (data: FarmerFormValues) => {
-    const formData = new FormData();
-    formData.append("farmName", data.farmName);
-    formData.append("location", data.location);
-    formData.append("description", data.description || "");
-    formData.append("email", data.email);
-
-    const result = await createProfile(formData);
+    const result = await createProfile(data);
     if (!result.success) {
       toast.error(result.message);
       return;
     }
     toast.success("登録完了");
+    if (result.redirectUrl) {
+      router.refresh();
+      router.push(result.redirectUrl);
+    }
   };
 
   return (

@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
-import { Metadata } from "next";
 
 export default function LandingPage() {
   const isDev = process.env.NODE_ENV !== "production";
   return (
-    <div className="min-h-screen bg-stone-50">
-      <main className="container mx-auto px-4 py-12">
+    <div className="flex flex-col min-h-screen bg-stone-50 ">
+      <main className="flex-1 container mx-auto px-6 py-12 md:py-20 flex flex-col items-center justify-center">
         {isDev && <p>開発モードです</p>}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4 text-gray-800">

@@ -60,7 +60,7 @@ export async function signup(data: SignUpFormValues): Promise<ActionResult> {
       data: {
         role,
       },
-      emailRedirectTo: `${origin}/auth/callback?next=/profile/setup`,
+      emailRedirectTo: `${origin}/auth/callback?next=/profile/create`,
     },
   });
 
